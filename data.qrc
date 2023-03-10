@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/pieces">
+        <file>black_king.png</file>
+    </qresource>
+</RCC>
