@@ -5,6 +5,7 @@
 #include "Pieces.h"
 #include <iostream>
 
+
 Game::Game(QWidget *parent){
     // set up the screen
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -16,37 +17,17 @@ Game::Game(QWidget *parent){
     scene->setSceneRect(0,0,1024,768);
     setScene(scene);
 
-    pieceToPlace = NULL;
+    pieceToPlace = nullptr;
     whiteTurn = true;
+    this->chessboard = Board();
 }
 
 void Game::start(){
     std::cout << "Jestem w starcie";
-    // test code TODO remove
-    int asci_val=66;
-    bool color=false;
-    QList<Square*> squares;
-    for(int row=1;row<=8;row+=1)
-    {
-        for(int column=1;column<=8;column+=1)
-        {
-            Square* square = new Square();
-            square->setPosition(75*row,75*column);
-            square->setColor(color);
-            asci_val+=1;
-            color=!(color);
-            squares.append(square);
-            scene->addItem(square);
-        }
-        color=!(color);
-    }
-    Piece* piece1 = new Piece();
-    piece1->setPos(20,40);
-    scene->addItem(piece1);
+    chessboard.startBoard();
+    chessboard.printSquare();
 
-    Piece* piece2 = new Piece();
-    piece2->setPos(200,400);
-    scene->addItem(piece2);
+
 }
 
 
@@ -123,10 +104,16 @@ void Game::pickUpPiece(Piece* piece){
 
 
 }
-void Game::placePiece(Piece *pieceToReplace){
-        pieceToPlace = NULL;
+
+
+void Game::placePiece(Square *choosenSquare){
+        pieceToPlace ->setPos(choosenSquare->xp,choosenSquare->yp);
+        std::cout << 'cos' << '\n';
+        pieceToPlace = nullptr;
+
 
 }
+
 
 bool Game::isWhiteTurn()
 {
@@ -136,7 +123,7 @@ bool Game::isWhiteTurn()
 
 void Game::mouseMoveEvent(QMouseEvent *event){
     // if there is a cardToPlace, then make it follow the mouse
-    if (pieceToPlace){
+    if (pieceToPlace!=nullptr){
         pieceToPlace->setPos(event->pos());
     }
 
@@ -160,3 +147,6 @@ void Game::mousePressEvent(QMouseEvent *event){
 
     QGraphicsView::mousePressEvent(event);
 }
+
+
+

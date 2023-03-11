@@ -6,8 +6,7 @@
 #include <QMouseEvent>
 #include <QMouseEvent>
 #include "Pieces.h"
-
-// #include "HexBoard.h"
+#include "Chessboard.h"
 
 class Game: public QGraphicsView{
     Q_OBJECT
@@ -24,14 +23,17 @@ public:
 
 
     void pickUpPiece(Piece* piece);
-    void placePiece(Piece* pieceToReplace);
+    void placePiece(Square* squareToPlace);
+    void setPickedPiece();
     bool isWhiteTurn();
     // public attributes
     QGraphicsScene* scene;
     // HexBoard* hexBoard; TODO
 
     Piece* pieceToPlace;
+    Board chessboard;
     QPointF startingPosition;
+
 public slots:
     void start();
 

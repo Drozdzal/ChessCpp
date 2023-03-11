@@ -7,18 +7,17 @@ extern Game * game; // there is an external global object called game
 
 Piece::Piece(QGraphicsItem *parent): QObject(), QGraphicsPixmapItem(parent){
     // draw graphics
-    setPixmap(QPixmap(":/pieces/black_king.png"));
+    setPixmap(QPixmap(":/bazowy/bialy_krol.png").scaled(75,75));
 }
 
 void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if (getIsPicked()==false){
+    if (game->pieceToPlace == nullptr){
             game->pickUpPiece(this);
-            setIsPicked(true);
     }
-    else if (getIsPicked()==true){
-        game->placePiece(this);
-        setIsPicked(false);
-    }
+//    else if (getIsPicked()==true){
+//        game->placePiece(this);
+//        setIsPicked(false);
+//    }
 }
 
 bool Piece::getIsWhite(){

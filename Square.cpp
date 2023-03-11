@@ -1,5 +1,8 @@
 #include "Square.h"
 #include <QBrush>
+#include "Game.h"
+#include <iostream>
+extern Game * game;
 
 Square::Square(){
     // drew the rect
@@ -29,3 +32,12 @@ void Square::setColor(bool isWhite)
     setBrush(brush);
 }
 
+void Square::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    if (game->pieceToPlace != nullptr){
+        game->placePiece(this);
+
+}
+
+
+
+}

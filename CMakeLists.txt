@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
             Pieces.h
             Pieces.cpp
             data.qrc
+            Chessboard.h
+            Chessboard.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
