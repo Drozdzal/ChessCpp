@@ -3,6 +3,7 @@
 #include "Button.h"
 #include <QGraphicsTextItem>
 #include "Pieces.h"
+#include <iostream>
 
 Game::Game(QWidget *parent){
     // set up the screen
@@ -14,9 +15,13 @@ Game::Game(QWidget *parent){
     scene = new QGraphicsScene();
     scene->setSceneRect(0,0,1024,768);
     setScene(scene);
+
+    pieceToPlace = NULL;
+    whiteTurn = true;
 }
 
 void Game::start(){
+    std::cout << "Jestem w starcie";
     // test code TODO remove
     int asci_val=66;
     bool color=false;
@@ -35,9 +40,13 @@ void Game::start(){
         }
         color=!(color);
     }
-    Piece* piece = new Piece();
-    piece->setPos(20,40);
-    scene->addItem(piece);
+    Piece* piece1 = new Piece();
+    piece1->setPos(20,40);
+    scene->addItem(piece1);
+
+    Piece* piece2 = new Piece();
+    piece2->setPos(200,400);
+    scene->addItem(piece2);
 }
 
 
@@ -99,6 +108,55 @@ void Game::displayStart(){
     quitButton->setPos(qxPos,qyPos);
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
     scene->addItem(quitButton);
+    std::cout << "Jestem w starcie";
+
+}
 
 
+void Game::pickUpPiece(Piece* piece){
+    // picks up the specified card
+    if (piece->getIsWhite() == isWhiteTurn() && pieceToPlace == NULL){
+        pieceToPlace = piece;
+        startingPosition = piece->pos();
+        return;
+}
+
+
+}
+void Game::placePiece(Piece *pieceToReplace){
+        pieceToPlace = NULL;
+
+}
+
+bool Game::isWhiteTurn()
+{
+    return Game::whiteTurn;
+}
+
+
+void Game::mouseMoveEvent(QMouseEvent *event){
+    // if there is a cardToPlace, then make it follow the mouse
+    if (pieceToPlace){
+        pieceToPlace->setPos(event->pos());
+    }
+
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void Game::mousePressEvent(QMouseEvent *event){
+    // make right click return cardToPlace to originalPos
+    if (event->button() == Qt::RightButton){
+        if (pieceToPlace){
+            pieceToPlace->setPos(startingPosition);
+            pieceToPlace = NULL;
+        }
+    }
+//    else if (event->button() == Qt::LeftButton){
+//        if (pieceToPlace){
+//            pieceToPlace->setPos(event->pos());
+//            pieceToPlace = NULL;
+//        }
+//    }
+
+    QGraphicsView::mousePressEvent(event);
 }
