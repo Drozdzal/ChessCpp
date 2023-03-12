@@ -25,7 +25,6 @@ Game::Game(QWidget *parent){
 void Game::start(){
     std::cout << "Jestem w starcie";
     chessboard.startBoard();
-    chessboard.printSquare();
 
 
 }
@@ -107,9 +106,18 @@ void Game::pickUpPiece(Piece* piece){
 
 
 void Game::placePiece(Square *choosenSquare){
-        pieceToPlace ->setPos(choosenSquare->xp,choosenSquare->yp);
-        std::cout << 'cos' << '\n';
-        pieceToPlace = nullptr;
+        if (pieceToPlace->isMovePossible(choosenSquare->row,choosenSquare->column)){
+            pieceToPlace ->setPos(choosenSquare->xp,choosenSquare->yp);
+            pieceToPlace->row=choosenSquare->row;
+            pieceToPlace->column=choosenSquare->column;
+            std::cout  << pieceToPlace->row << '\n';
+            std::cout  << pieceToPlace->column << '\n';
+            pieceToPlace = nullptr;
+        }
+        else
+        {
+            std::cout << "Move is not possible";
+        }
 
 
 }

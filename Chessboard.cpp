@@ -20,6 +20,8 @@ void Board::startBoard()
             Square* square = new Square();
             square->setPosition(75*row,75*column);
             square->setColor(color);
+            square->column=column;
+            square->row=row;
             asci_val+=1;
             color=!(color);
 //            Board::boboard.append(square);

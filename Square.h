@@ -15,11 +15,11 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     int xp;
     int yp;
+    int row;
+    int column;
 private:
     int width=75;
     int height=75;
-    int row;
-    int column;
     bool occupied;
     int occuping_piece;
     bool isWhite;

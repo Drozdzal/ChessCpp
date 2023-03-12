@@ -26,7 +26,7 @@ void Square::setColor(bool isWhite)
         brush.setColor(Qt::white);
     }
     else{
-        brush.setColor(Qt::black);
+        brush.setColor(Qt::darkGray);
     }
 
     setBrush(brush);
