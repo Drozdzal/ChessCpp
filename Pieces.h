@@ -16,21 +16,59 @@ public:
     bool getIsWhite();
     void setIsPicked(bool picked_state);
     bool getIsPicked();
-    bool isMovePossible(int destRow,int destColumn);
-    bool checkPawnMoves(int destRow,int destColumn);
-    bool checkKingMoves(int destRow,int destColumn);
-    bool checkRookMoves(int destRow,int destColumn);
-    bool checkBishopMoves(int destRow,int destColumn);
-    bool checkKnightMoves(int destRow,int destColumn);
-    void createWhitePiece();
+    virtual bool isMovePossible(int destRow,int destColumn);
     int row;
     int column;
+    bool isWhite=true;
+    bool firstMove=true;
+    bool isPicked=false;
 
 private:
-    bool isWhite=true;
-    bool isPicked=false;
-    bool firstMove=true;
 
+
+};
+
+class Pawn: public Piece{
+    Q_OBJECT
+public:
+    Pawn(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
+};
+
+
+class Knight: public Piece{
+    Q_OBJECT
+public:
+    Knight(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
+};
+
+class King: public Piece{
+    Q_OBJECT
+public:
+    King(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
+};
+
+class Queen: public Piece{
+    Q_OBJECT
+public:
+    Queen(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
+};
+
+class Rook: public Piece{
+    Q_OBJECT
+public:
+    Rook(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
+};
+
+class Bishop: public Piece{
+    Q_OBJECT
+public:
+    Bishop(bool isWhite);
+    virtual bool isMovePossible(int destRow, int destColumn);
 };
 
 

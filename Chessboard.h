@@ -10,6 +10,7 @@ class Board
   public:
     void startBoard();
     void printSquare();
+    void setPieceOnSquare(Piece* piece, Square* sqaure);
 //    void resetBoard();
 //    void getBoard();
 

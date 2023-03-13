@@ -30,13 +30,22 @@ void Board::startBoard()
         }
         color=!(color);
     }
-    Piece* piece1 = new Piece();
-    piece1->setPos(20,40);
-    game->scene->addItem(piece1);
 
-    Piece* piece2 = new Piece();
-    piece2->setPos(200,400);
-    game->scene->addItem(piece2);
+    Pawn* whitePiece = new Pawn(true);
+    whitePiece->setPos(20,40);
+    game->scene->addItem(whitePiece);
+
+    Knight* blackPiece = new Knight(true);
+    blackPiece->setPos(400,50);
+    game->scene->addItem(blackPiece);
+
+    Rook* blackPiece2 = new Rook(true);
+    blackPiece2->setPos(200,50);
+    game->scene->addItem(blackPiece2);
+
+    Queen* blackPiece3 = new Queen(true);
+    blackPiece3->setPos(250,100);
+    game->scene->addItem(blackPiece3);
 };
 
 void Board::printSquare()
