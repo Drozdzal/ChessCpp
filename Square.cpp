@@ -11,9 +11,9 @@ Square::Square(){
 
 }
 void Square::setPosition(int x,int y){
-    Square::xp=x;
-    Square::yp=y;
-    setRect(xp,yp,width=width,height=height);
+    this->X=x;
+    this->Y=y;
+    setRect(X,Y,width=width,height=height);
 }
 
 void Square::setColor(bool isWhite)
@@ -32,12 +32,31 @@ void Square::setColor(bool isWhite)
     setBrush(brush);
 }
 
-void Square::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if (game->pieceToPlace != nullptr){
-        game->placePiece(this);
 
+bool Square::isOccupied(){
+    return this->occupied;
 }
 
+void Square::setOccupied(bool isOccupied){
+    this->occupied=isOccupied;
+}
 
+int Square::getX()
+{
+    return this->X;
+}
 
+int Square::getY()
+{
+    return this->Y;
+}
+
+void Square::setX(int X)
+{
+    this->X=X;
+}
+
+void Square::setY(int Y)
+{
+    this->Y=Y;
 }

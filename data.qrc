@@ -7,11 +7,11 @@
         <file>bazowy/bialy_pionek.png</file>
         <file>bazowy/bialy_skoczek.png</file>
         <file>bazowy/bialy_wieza.png</file>
-        <file>bazowy/czarny_goniec.png</file>
+        <file>bazowy/czarny_skoczek.png</file>
         <file>bazowy/czarny_hetman.png</file>
         <file>bazowy/czarny_krol.png</file>
         <file>bazowy/czarny_pionek.png</file>
-        <file>bazowy/czarny_skoczek.png</file>
+        <file>bazowy/czarny_goniec.png</file>
         <file>bazowy/czarny_wieza.png</file>
     </qresource>
 </RCC>

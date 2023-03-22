@@ -4,26 +4,28 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QGraphicsSceneMouseEvent>
+#include "Pieces.h"
 
 class Square: public QObject,public QGraphicsRectItem{
     Q_OBJECT
 public:
     Square();
-//public slots:
     void setPosition(int x,int y);
     void setColor(bool isWhite);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    int xp;
-    int yp;
-    int row;
-    int column;
+    bool isOccupied();
+    void setOccupied(bool isOccupied);
+    int getX();
+    int getY();
+    void setX(int X);
+    void setY(int Y);
+    Piece* piece=nullptr;
 private:
     int width=75;
     int height=75;
-    bool occupied;
-    int occuping_piece;
+    bool occupied=false;
     bool isWhite;
-
+    int X;
+    int Y;
 };
 
 

@@ -22,17 +22,21 @@ public:
     void mousePressEvent(QMouseEvent* event);
 
 
-    void pickUpPiece(Piece* piece);
     void placePiece(Square* squareToPlace);
+    bool piecesOnPath(Square *choosenSquare);
     void setPickedPiece();
     bool isWhiteTurn();
+    void changeTurn();
+    int getSquareOnRowColumn(int row,int column);
+    char getColumnFromPixels(int X);
+    char getRowFromPixels(int Y);
     // public attributes
     QGraphicsScene* scene;
-    // HexBoard* hexBoard; TODO
-
-    Piece* pieceToPlace;
+    Piece* pieceToPlace=nullptr;
     Board chessboard;
-    QPointF startingPosition;
+    std::string primarySquare="00";
+    std::string secondarySquare="00";
+    bool gameStarted=false;
 
 public slots:
     void start();

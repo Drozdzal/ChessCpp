@@ -7,16 +7,16 @@
 class Board
 {
 
-  public:
+public:
     void startBoard();
     void printSquare();
-    void setPieceOnSquare(Piece* piece, Square* sqaure);
-//    void resetBoard();
-//    void getBoard();
+    void setPieceOnSquare(Piece* piece, std::string sqaurePosition);
+//private:
+    std::map<std::string,Square*> board;
+    int sizeOfSquare=75;
+    int boardColumnOffset = 75;
+    int boardRowOffset =75;
 
-private:
-    static QList<Square*> boboard;
-    QList<Square*> board;
 
 };
 
