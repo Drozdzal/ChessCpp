@@ -14,11 +14,13 @@ Piece::Piece(QGraphicsItem *parent): QObject(), QGraphicsPixmapItem(parent){
 }
 
 
-
+void Piece::changeFirstMove()
+{
+    firstMove=false;
+}
 bool Piece::getIsWhite(){
     return isWhite;
 }
-
 
 
 bool Piece::isSquareOccupied(std::string desiredSquare)
@@ -27,6 +29,8 @@ bool Piece::isSquareOccupied(std::string desiredSquare)
 
     if (desiredSquare==(*it)->actualPosition)
     {
+        QDebug.operator <<("tak");
+
         return true;
     }
     }
@@ -38,6 +42,15 @@ bool Piece::getFirstMove()
     return this->firstMove;
 }
 
+bool Piece::movePossible(std::string desiredSquare)
+{
+//    for(auto it=allPossibleMoves.begin(); it!=allPossibleMoves.end();it++)
+//    {
+//        std::cout << (*it);
+//    }
+    bool found = (std::find(allPossibleMoves.begin(), allPossibleMoves.end(), desiredSquare) != allPossibleMoves.end());
+    return found;
+}
 Pawn::Pawn(bool isWhite){
     this->isWhite=isWhite;
     if (isWhite){
@@ -47,21 +60,65 @@ Pawn::Pawn(bool isWhite){
         this->setPixmap(QPixmap(":/bazowy/czarny_pionek.png").scaled(75,75));
     }
 }
+void Piece::getPossibleMoves()
+{
 
-//bool Pawn::isMovePossible(int destRow, int destColumn){
-//    if (this->getFirstMove()){
-//        this->firstMove=false;
-//        return true;
-//    }
-//    else{
-//        if (this->column-destColumn==1 && this->row-destRow==0){
-//                return true;
-//        }
-//        else{
-//            return false;
-//        }
-//    }
-//}
+}
+
+void Pawn::getPossibleMoves()
+{
+    int goForward;
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    std::cout<<"column" << column <<"\n";
+    std::cout<<"row" << row <<"\n";
+    allPossibleMoves.clear();
+    if (getIsWhite()) {
+                    goForward=1;
+                }
+                else {
+                goForward=-1;
+                }
+
+                    possiblePosition[0]=column;
+                    possiblePosition[1]=(char)((int)row-1*goForward);
+                    if (!isSquareOccupied(possiblePosition)) {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                     std::cout <<"Possible position "  << possiblePosition <<'\n';
+                    possiblePosition[0]=column;
+                    possiblePosition[1]=(char)((int)row-2*goForward);
+
+                    if (getFirstMove() && (!isSquareOccupied(possiblePosition))) {
+
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                     std::cout <<"Possible position "  << possiblePosition <<'\n';
+
+
+                    possiblePosition[0]=(char)((int)(column)-1);
+                    possiblePosition[1]=(char)((int)row-1*goForward);
+                    if (isSquareOccupied(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                    std::cout <<"Possible position "  << possiblePosition <<'\n';
+
+                    possiblePosition[0]=(char)((int)(column)+1);
+                    possiblePosition[1]=(char)((int)row-1*goForward);
+                    if (isSquareOccupied(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                     std::cout <<"Possible position "  << possiblePosition <<'\n';
+
+                    for(auto it=allPossibleMoves.begin(); it!=allPossibleMoves.end();it++)
+                    {
+//                        std::cout <<"Possible position "  << (*it) <<'\n';
+                    }
+}
+
 
 Knight::Knight(bool isWhite){
     this->isWhite=isWhite;
@@ -73,16 +130,30 @@ Knight::Knight(bool isWhite){
     }
 }
 
-//bool Knight::isMovePossible(int destRow, int destColumn){
-//    if ((abs(this->column-destColumn) >=1 && abs(this->column-destColumn) <=2)  &&
-//            (abs(this->row-destRow)>=1 && abs(this->row-destRow)<=2) &&
-//            ((abs(this->row-destRow)+abs(this->column-destColumn))==3)) {
-//            return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
+void Knight::getPossibleMoves()
+{
+    allPossibleMoves.clear();
+    int goForward;
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=-1;i<2;i+=2) {
+                goForward=i;
+                possiblePosition[0]=(char) ((int) (column) - 1*goForward);
+                possiblePosition[1]=(char) (row - 2 * goForward);
+                allPossibleMoves.push_front(possiblePosition);
+                possiblePosition[0]=(char) ((int) (column) - 2*goForward);
+                possiblePosition[1]=(char) (row - 1 * goForward);
+                allPossibleMoves.push_front(possiblePosition);
+                possiblePosition[0]=(char) ((int) (column) - 1*goForward);
+                possiblePosition[1]=(char) (row + 2 * goForward);
+                allPossibleMoves.push_front(possiblePosition);
+                possiblePosition[0]=(char) ((int) (column) - 2*goForward);
+                possiblePosition[1]=(char) (row + 1 * goForward);
+                allPossibleMoves.push_front(possiblePosition);
+
+            }
+}
 
 
 Bishop::Bishop(bool isWhite){
@@ -95,14 +166,63 @@ Bishop::Bishop(bool isWhite){
     }
 }
 
-//bool Bishop::isMovePossible(int destRow, int destColumn){
-//    if (abs(this->column-destColumn) ==  abs(this->row-destRow)) {
-//            return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
+
+void Bishop::getPossibleMoves()
+{
+    allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+}
 
 Rook::Rook(bool isWhite){
     this->isWhite=isWhite;
@@ -114,14 +234,63 @@ Rook::Rook(bool isWhite){
     }
 }
 
-//bool Rook::isMovePossible(int destRow, int destColumn){
-//    if (abs(this->column-destColumn)==0 ||  abs(this->row-destRow)==0) {
-//            return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
+void Rook::getPossibleMoves()
+{
+    allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+}
+
 
 King::King(bool isWhite){
     this->isWhite=isWhite;
@@ -133,14 +302,23 @@ King::King(bool isWhite){
     }
 }
 
-//bool King::isMovePossible(int destRow, int destColumn){
-//    if (abs(this->column-destColumn)<=1 &&  abs(this->row-destRow)<=1) {
-//            return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
+void King::getPossibleMoves()
+{
+    allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=-1; i<=1;i++)
+        for(int j=-1; j<=1;j++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row-1*j);
+                allPossibleMoves.push_front(possiblePosition);
+            }
+
+}
+
 
 Queen::Queen(bool isWhite){
     this->isWhite=isWhite;
@@ -152,11 +330,110 @@ Queen::Queen(bool isWhite){
     }
 }
 
-//bool Queen::isMovePossible(int destRow, int destColumn){
-//    if (abs(this->column-destColumn)==0 ||  abs(this->row-destRow)==0 || (abs(this->column-destColumn) ==  abs(this->row-destRow)))  {
-//            return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
+void Queen::getPossibleMoves()
+{
+    allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+    for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row-1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row+1*i);
+                allPossibleMoves.push_front(possiblePosition);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    break;
+                }
+            }
+}
+

@@ -15,10 +15,14 @@ public:
 //    void mousePressEvenz t(QGraphicsSceneMouseEvent* event);
     bool getIsWhite();
     bool getFirstMove();
-//    virtual bool isMovePossible(int destRow,int destColumn);
+    virtual void getPossibleMoves();
     void changeFirstMove();
     std::string actualPosition="00";
+    std::string possiblePosition ="00";
+    std::list<std::string> allPossibleMoves;
     bool isSquareOccupied(std::string desiredSquare);
+    bool movePossible(std::string desiredSquare);
+
 
 protected:
     bool isWhite;
@@ -34,42 +38,42 @@ class Pawn: public Piece{
     Q_OBJECT
 public:
     Pawn(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 class Knight: public Piece{
     Q_OBJECT
 public:
     Knight(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 class King: public Piece{
     Q_OBJECT
 public:
     King(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 class Queen: public Piece{
     Q_OBJECT
 public:
     Queen(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 class Rook: public Piece{
     Q_OBJECT
 public:
     Rook(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 class Bishop: public Piece{
     Q_OBJECT
 public:
     Bishop(bool isWhite);
-//    virtual bool isMovePossible(int destRow, int destColumn);
+    virtual void getPossibleMoves();
 };
 
 

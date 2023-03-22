@@ -31,7 +31,39 @@ void Game::start(){
 
 }
 
+void Game::movePiece()
+{
+    pieceToPlace->setX(chessboard.board.at(secondarySquare)->getX());
+    pieceToPlace->setY(chessboard.board.at(secondarySquare)->getY());
+    pieceToPlace->actualPosition=secondarySquare;
+    chessboard.board.at(primarySquare)->piece=nullptr;
+    chessboard.board.at(primarySquare)->setOccupied(false);
+    chessboard.board.at(secondarySquare)->piece = pieceToPlace;
+    chessboard.board.at(secondarySquare)->setOccupied(true);
+    std::cout << "moved" << "\n";
 
+}
+
+void Game::attackPiece()
+{
+    pieceToPlace->setX(chessboard.board.at(secondarySquare)->getX());
+    pieceToPlace->setY(chessboard.board.at(secondarySquare)->getY());
+    pieceToPlace->actualPosition=secondarySquare;
+    chessboard.board.at(secondarySquare)->piece->actualPosition="00";
+    scene->removeItem(chessboard.board.at(secondarySquare)->piece);
+    std::cout << "removed item" << "\n";
+    chessboard.board.at(primarySquare)->piece=nullptr;
+    chessboard.board.at(primarySquare)->setOccupied(false);
+    chessboard.board.at(secondarySquare)->piece = pieceToPlace;
+    chessboard.board.at(secondarySquare)->setOccupied(true);
+}
+
+void Game::backToPrimaryPosition()
+{
+    pieceToPlace->setX(chessboard.board.at(primarySquare)->getX());
+    pieceToPlace->setY(chessboard.board.at(primarySquare)->getY());
+    pieceToPlace = nullptr;
+}
 void Game::displayStart(){
     // create the title text
     QGraphicsTextItem* titleText = new QGraphicsTextItem(QString("Chess Game - MZ"));
@@ -131,9 +163,11 @@ void Game::mousePressEvent(QMouseEvent *event){
     if (gameStarted){
     if ((event->button() == Qt::LeftButton) && (pieceToPlace==nullptr))
     {
+
         primarySquare[0]=getColumnFromPixels(event->x());
         primarySquare[1]=getRowFromPixels(event->y());
-        if (chessboard.board.at(primarySquare)->piece !=nullptr)
+        if (chessboard.board.at(primarySquare)->piece !=nullptr &&
+               chessboard.board.at(primarySquare)->piece->getIsWhite() == isWhiteTurn() )
         {
         pieceToPlace=chessboard.board.at(primarySquare)->piece;
         }
@@ -143,9 +177,26 @@ void Game::mousePressEvent(QMouseEvent *event){
             std::cout<<"checked square"<<pieceToPlace->isSquareOccupied("A2")<<'\n';
             secondarySquare[0]=getColumnFromPixels(event->x());
             secondarySquare[1]=getRowFromPixels(event->y());
-            pieceToPlace->setX(chessboard.board.at(secondarySquare)->getX());
-            pieceToPlace->setY(chessboard.board.at(secondarySquare)->getY());
-            pieceToPlace=nullptr;
+            pieceToPlace->getPossibleMoves();
+            if (pieceToPlace->movePossible(secondarySquare))
+            {
+                pieceToPlace->changeFirstMove();
+                if (chessboard.board.at(secondarySquare)->isOccupied()){
+                    if(pieceToPlace->getIsWhite()!=chessboard.board.at(secondarySquare)->piece->getIsWhite())
+                    {
+                    attackPiece();
+                    changeTurn();
+                    }
+                }
+                else {
+                    movePiece();
+                    changeTurn();
+                }
+                pieceToPlace=nullptr;
+            }
+            else{
+            backToPrimaryPosition();
+            }
 
 
     }
@@ -155,9 +206,7 @@ void Game::mousePressEvent(QMouseEvent *event){
 
     if (event->button() == Qt::RightButton){
         if (pieceToPlace){
-            pieceToPlace->setX(chessboard.board.at(primarySquare)->getX());
-            pieceToPlace->setY(chessboard.board.at(primarySquare)->getY());
-            pieceToPlace = nullptr;
+            backToPrimaryPosition();
         }
     }
     }

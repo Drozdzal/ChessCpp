@@ -27,6 +27,9 @@ public:
     void setPickedPiece();
     bool isWhiteTurn();
     void changeTurn();
+    void movePiece();
+    void attackPiece();
+    void backToPrimaryPosition();
     int getSquareOnRowColumn(int row,int column);
     char getColumnFromPixels(int X);
     char getRowFromPixels(int Y);
