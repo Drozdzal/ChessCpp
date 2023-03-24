@@ -3,7 +3,6 @@
 #include <QList>
 #include "Game.h"
 #include <iostream>
-#include "Pieces.h"
 
 extern Game * game; // there is an external global object called game
 std::list<Piece*> Piece::allFigures{};
@@ -29,7 +28,6 @@ bool Piece::isSquareOccupied(std::string desiredSquare)
 
     if (desiredSquare==(*it)->actualPosition)
     {
-        QDebug.operator <<("tak");
 
         return true;
     }

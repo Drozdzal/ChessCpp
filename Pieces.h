@@ -12,7 +12,6 @@ class Piece: public QObject,public QGraphicsPixmapItem {
 public:
     Piece(QGraphicsItem * parent=0);
 
-//    void mousePressEvenz t(QGraphicsSceneMouseEvent* event);
     bool getIsWhite();
     bool getFirstMove();
     virtual void getPossibleMoves();
@@ -22,16 +21,11 @@ public:
     std::list<std::string> allPossibleMoves;
     bool isSquareOccupied(std::string desiredSquare);
     bool movePossible(std::string desiredSquare);
-
+    static std::list<Piece*> allFigures;
 
 protected:
     bool isWhite;
     bool firstMove=true;
-    static std::list<Piece*> allFigures;
-
-
-
-
 };
 
 class Pawn: public Piece{

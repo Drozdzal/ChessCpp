@@ -6,7 +6,6 @@
 #include <iostream>
 #include <math.h>
 
-
 Game::Game(QWidget *parent){
     // set up the screen
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -21,11 +20,14 @@ Game::Game(QWidget *parent){
     pieceToPlace = nullptr;
     whiteTurn = true;
     this->chessboard = Board();
+    this->saver=Saver();
 }
 
 void Game::start(){
 
     chessboard.startBoard();
+//    saver.piecesToJson();
+    std::cout << "Tried to save in game" << "\n";
     gameStarted=true;
 
 
@@ -181,6 +183,8 @@ void Game::mousePressEvent(QMouseEvent *event){
             if (pieceToPlace->movePossible(secondarySquare))
             {
                 pieceToPlace->changeFirstMove();
+                saver.singlePieceChange(pieceToPlace,secondarySquare);
+
                 if (chessboard.board.at(secondarySquare)->isOccupied()){
                     if(pieceToPlace->getIsWhite()!=chessboard.board.at(secondarySquare)->piece->getIsWhite())
                     {
@@ -193,6 +197,7 @@ void Game::mousePressEvent(QMouseEvent *event){
                     changeTurn();
                 }
                 pieceToPlace=nullptr;
+                saver.save();
             }
             else{
             backToPrimaryPosition();

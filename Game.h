@@ -7,6 +7,7 @@
 #include <QMouseEvent>
 #include "Pieces.h"
 #include "Chessboard.h"
+#include "Saver.h"
 
 class Game: public QGraphicsView{
     Q_OBJECT
@@ -37,6 +38,7 @@ public:
     QGraphicsScene* scene;
     Piece* pieceToPlace=nullptr;
     Board chessboard;
+    Saver saver;
     std::string primarySquare="00";
     std::string secondarySquare="00";
     bool gameStarted=false;

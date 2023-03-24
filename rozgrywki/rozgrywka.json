@@ -1,0 +1,156 @@
+{
+    "0": {
+        "A1": {
+            "isWhite": false,
+            "pieceName": "class Rook"
+        },
+        "A2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "A7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "A8": {
+            "isWhite": true,
+            "pieceName": "class Rook"
+        },
+        "B1": {
+            "isWhite": false,
+            "pieceName": "class Knight"
+        },
+        "B2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "B7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "B8": {
+            "isWhite": true,
+            "pieceName": "class Knight"
+        },
+        "C1": {
+            "isWhite": false,
+            "pieceName": "class Bishop"
+        },
+        "C2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "C7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "C8": {
+            "isWhite": true,
+            "pieceName": "class Bishop"
+        },
+        "D1": {
+            "isWhite": false,
+            "pieceName": "class Queen"
+        },
+        "D2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "D7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "D8": {
+            "isWhite": true,
+            "pieceName": "class Queen"
+        },
+        "E1": {
+            "isWhite": false,
+            "pieceName": "class King"
+        },
+        "E2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "E7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "E8": {
+            "isWhite": true,
+            "pieceName": "class King"
+        },
+        "F1": {
+            "isWhite": false,
+            "pieceName": "class Bishop"
+        },
+        "F2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "F7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "F8": {
+            "isWhite": true,
+            "pieceName": "class Bishop"
+        },
+        "G1": {
+            "isWhite": false,
+            "pieceName": "class Knight"
+        },
+        "G2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "G7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "G8": {
+            "isWhite": true,
+            "pieceName": "class Knight"
+        },
+        "H1": {
+            "isWhite": false,
+            "pieceName": "class Rook"
+        },
+        "H2": {
+            "isWhite": false,
+            "pieceName": "class Pawn"
+        },
+        "H7": {
+            "isWhite": true,
+            "pieceName": "class Pawn"
+        },
+        "H8": {
+            "isWhite": true,
+            "pieceName": "class Rook"
+        }
+    },
+    "1": {
+        "changeTo": "F5",
+        "from": "F7",
+        "isWhite": true,
+        "pieceName": "class Pawn"
+    },
+    "2": {
+        "changeTo": "E4",
+        "from": "E2",
+        "isWhite": false,
+        "pieceName": "class Pawn"
+    },
+    "3": {
+        "changeTo": "F7",
+        "from": "E8",
+        "isWhite": true,
+        "pieceName": "class King"
+    },
+    "4": {
+        "changeTo": "H5",
+        "from": "D1",
+        "isWhite": false,
+        "pieceName": "class Queen"
+    }
+}

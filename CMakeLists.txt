@@ -28,6 +28,10 @@ set(PROJECT_SOURCES
             data.qrc
             Chessboard.h
             Chessboard.cpp
+            Loader.h
+            Loader.cpp
+            Saver.cpp
+            Saver.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
