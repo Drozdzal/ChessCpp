@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Network)
 
 set(PROJECT_SOURCES
             main.cpp
@@ -32,6 +33,25 @@ set(PROJECT_SOURCES
             Loader.cpp
             Saver.cpp
             Saver.h
+            LanServer.h
+            LanClient.h
+            LanServer.cpp
+            LanClient.cpp
+            Window.h
+            Window.cpp
+            MultiThread.cpp
+            MultiThread.h
+            Player.h
+            Player.cpp
+            Timer.cpp
+            Timer.h
+            DataBaseBridge.cpp
+            DataBaseBridge.h
+            GameMode.h
+            GameMode.cpp
+            ComputerPlayer.cpp
+            ComputerPlayer.h
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -66,6 +86,8 @@ set_target_properties(Chess PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+
+target_link_libraries(Chess PRIVATE Qt6::Network)
 
 install(TARGETS Chess
     BUNDLE DESTINATION .

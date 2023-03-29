@@ -13,9 +13,8 @@ void Board::setPieceOnSquare(Piece* piece, std::string squarePosition){
     square->piece=piece;
 }
 
-void Board::startBoard()
+void Board::createBoard()
 {
-    game->scene->clear();
     bool color=false;
     std::string squareName = "00";
 
@@ -32,87 +31,66 @@ void Board::startBoard()
             squareName[0]=(char)(column+65);
             squareName[1]=(row+1)+'0';
             this->board[squareName]=square;
-            game->scene->addItem(square);
         }
         color=!(color);
     }
+}
+
+void Board::createPieces()
+{
+    std::string squareName = "00";
+    for(int i=1;i<=8;i++)
+    {
+        Pawn* whitePawn = new Pawn(true);
+        Pawn* blackPawn = new Pawn(false);
+        squareName[0]=char(64+i);
+        squareName[1]=7+'0';
+        setPieceOnSquare(whitePawn, squareName);
+        squareName[1]=2+'0';
+        setPieceOnSquare(blackPawn, squareName);
+    }
+        Rook* whiteRook = new Rook(true);
+        setPieceOnSquare(whiteRook, "A8");
+        whiteRook = new Rook(true);
+        setPieceOnSquare(whiteRook, "H8");
+
+        Rook* blackRook = new Rook(false);
+        setPieceOnSquare(blackRook, "A1");
+        blackRook = new Rook(false);
+        setPieceOnSquare(blackRook, "H1");
+
+        Knight* whiteKnight = new Knight(true);
+        setPieceOnSquare(whiteKnight, "B8");
+        whiteKnight = new Knight(true);
+        setPieceOnSquare(whiteKnight, "G8");
+
+        Knight* blackKnight = new Knight(false);
+        setPieceOnSquare(blackKnight, "B1");
+        blackKnight = new Knight(false);
+        setPieceOnSquare(blackKnight, "G1");
 
 
-//    for(int i=1;i<=8;i++)
-//    {
-//        Pawn* whitePawn = new Pawn(true);
-//        Pawn* blackPawn = new Pawn(false);
-//        squareName[0]=char(64+i);
-//        squareName[1]=7+'0';
-//        setPieceOnSquare(whitePawn, squareName);
-//        game->scene->addItem(whitePawn);
-//        squareName[1]=2+'0';
-//        setPieceOnSquare(blackPawn, squareName);
-//        game->scene->addItem(blackPawn);
-//    }
-//        Rook* whiteRook = new Rook(true);
-//        setPieceOnSquare(whiteRook, "A8");
-//        game->scene->addItem(whiteRook);
-//        whiteRook = new Rook(true);
-//        setPieceOnSquare(whiteRook, "H8");
-//        game->scene->addItem(whiteRook);
+        Bishop* whiteBishop = new Bishop(true);
+        setPieceOnSquare(whiteBishop, "C8");
+        whiteBishop = new Bishop(true);
+        setPieceOnSquare(whiteBishop, "F8");
 
-//        Rook* blackRook = new Rook(false);
-//        setPieceOnSquare(blackRook, "A1");
-//        game->scene->addItem(blackRook);
-//        blackRook = new Rook(false);
-//        setPieceOnSquare(blackRook, "H1");
-//        game->scene->addItem(blackRook);
+        Bishop* blackBishop = new Bishop(false);
+        setPieceOnSquare(blackBishop, "C1");
+        blackBishop = new Bishop(false);
+        setPieceOnSquare(blackBishop, "F1");
 
-//        Knight* whiteKnight = new Knight(true);
-//        setPieceOnSquare(whiteKnight, "B8");
-//        game->scene->addItem(whiteKnight);
-//        whiteKnight = new Knight(true);
-//        setPieceOnSquare(whiteKnight, "G8");
-//        game->scene->addItem(whiteKnight);
+    King* whiteKing = new King(true);
+    setPieceOnSquare(whiteKing, "E8");
 
-//        Knight* blackKnight = new Knight(false);
-//        setPieceOnSquare(blackKnight, "B1");
-//        game->scene->addItem(blackKnight);
-//        blackKnight = new Knight(false);
-//        setPieceOnSquare(blackKnight, "G1");
-//        game->scene->addItem(blackKnight);
+    King* blackKing = new King(false);
+    setPieceOnSquare(blackKing, "E1");
 
 
-//        Bishop* whiteBishop = new Bishop(true);
-//        setPieceOnSquare(whiteBishop, "C8");
-//        game->scene->addItem(whiteBishop);
-//        whiteBishop = new Bishop(true);
-//        setPieceOnSquare(whiteBishop, "F8");
-//        game->scene->addItem(whiteBishop);
+    Queen* whiteQueen = new Queen(true);
+    setPieceOnSquare(whiteQueen, "D8");
 
-//        Bishop* blackBishop = new Bishop(false);
-//        setPieceOnSquare(blackBishop, "C1");
-//        game->scene->addItem(blackBishop);
-//        blackBishop = new Bishop(false);
-//        setPieceOnSquare(blackBishop, "F1");
-//        game->scene->addItem(blackBishop);
+    Queen* blackQueen = new Queen(false);
+    setPieceOnSquare(blackQueen, "D1");
+}
 
-//    King* whiteKing = new King(true);
-//    setPieceOnSquare(whiteKing, "E8");
-//    game->scene->addItem(whiteKing);
-
-//    King* blackKing = new King(false);
-//    setPieceOnSquare(blackKing, "E1");
-//    game->scene->addItem(blackKing);
-
-
-//    Queen* whiteQueen = new Queen(true);
-//    setPieceOnSquare(whiteQueen, "D8");
-//    game->scene->addItem(whiteQueen);
-
-//    Queen* blackQueen = new Queen(false);
-//    setPieceOnSquare(blackQueen, "D1");
-//    game->scene->addItem(blackQueen);
-};
-
-//void Board::printSquare()
-//{
-//    this->board[2]->setColor(Qt::lightGray);
-//    game->scene->addItem(this->board[2]);
-//}

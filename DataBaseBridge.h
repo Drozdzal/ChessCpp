@@ -1,0 +1,4 @@
+#ifndef DATABASEBRIDGE_H
+#define DATABASEBRIDGE_H
+
+#endif // DATABASEBRIDGE_H

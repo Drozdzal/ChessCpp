@@ -13,25 +13,66 @@ Game::Game(QWidget *parent){
     setFixedSize(1200,900);
 
     // set up the scene
-    scene = new QGraphicsScene();
-    scene->setSceneRect(0,0,1200,900);
-    setScene(scene);
-
     pieceToPlace = nullptr;
     whiteTurn = true;
     this->chessboard = Board();
     this->saver=Saver();
+    this->window = new Window();
+    connect(window,&Window::multiplayer,this,&Game::multiplayer);
+    connect(window,&Window::singleplayer,this,&Game::singleplayer);
+    connect(window,&Window::loading,this,&Game::loading);
+    connect(window,&Window::computer,this,&Game::computer);
+    connect(window,&Window::settings,this,&Game::settings);
+    connect(window, &Window::close, this, &Game::close);
+    setScene(window->scene);
+    window->displayMenu();
 }
 
-void Game::start(){
 
-    chessboard.startBoard();
-//    saver.piecesToJson();
-    std::cout << "Tried to save in game" << "\n";
-    gameStarted=true;
 
+// SLOTS
+void Game::multiplayer()
+{
+    this->server = new MyServer();
+    server->startServer();
+
+
+    this->client= new MyClient();
+    client->connectToServer();
 
 }
+void Game::singleplayer()
+{
+    Player player1=Player("Michal",true);
+    Player player2=Player("Ewa",false);;
+    Singleplayer singleplayer =Singleplayer(player1,player2);
+    chessboard.createBoard();
+    chessboard.createPieces();
+    window->clearScene();
+    window->displayChessboard(chessboard.board);
+    window->displayPieces(chessboard.board.at("A1")->piece->allFigures);
+    this->gameStarted=true;
+}
+void Game::loading()
+{
+    this->client= new MyClient();
+    client->connectToServer();
+}
+void Game::settings()
+{
+    qDebug() << "Settings";
+    client->sendMessage();
+}
+void Game::computer()
+{
+    qDebug() << "Computer";
+}
+void Game::close()
+{
+
+    qDebug() << "Quit";
+}
+
 
 void Game::movePiece()
 {
@@ -45,100 +86,29 @@ void Game::movePiece()
     std::cout << "moved" << "\n";
 
 }
-
 void Game::attackPiece()
 {
     pieceToPlace->setX(chessboard.board.at(secondarySquare)->getX());
     pieceToPlace->setY(chessboard.board.at(secondarySquare)->getY());
     pieceToPlace->actualPosition=secondarySquare;
     chessboard.board.at(secondarySquare)->piece->actualPosition="00";
-    scene->removeItem(chessboard.board.at(secondarySquare)->piece);
+    window->deletePiece(chessboard.board.at(secondarySquare)->piece);
     std::cout << "removed item" << "\n";
     chessboard.board.at(primarySquare)->piece=nullptr;
     chessboard.board.at(primarySquare)->setOccupied(false);
     chessboard.board.at(secondarySquare)->piece = pieceToPlace;
     chessboard.board.at(secondarySquare)->setOccupied(true);
 }
-
 void Game::backToPrimaryPosition()
 {
     pieceToPlace->setX(chessboard.board.at(primarySquare)->getX());
     pieceToPlace->setY(chessboard.board.at(primarySquare)->getY());
     pieceToPlace = nullptr;
 }
-void Game::displayStart(){
-    // create the title text
-    QGraphicsTextItem* titleText = new QGraphicsTextItem(QString("Chess Game - MZ"));
-    QFont titleFont("arial",80);
-    titleText->setFont(titleFont);
-    int txPos = this->width()/2 - titleText->boundingRect().width()/2;
-    int tyPos = 100;
-    titleText->setPos(txPos,tyPos);
-    scene->addItem(titleText);
-
-    // create the quit button
-    Button* multiplayerButton = new Button(QString("Play Multiplayer"));
-    int mbxPos = this->width()/2 - multiplayerButton->boundingRect().width()/2;
-    int mbyPos = 275;
-    multiplayerButton->setPos(mbxPos,mbyPos);
-    connect(multiplayerButton,SIGNAL(clicked()),this,SLOT(start()));
-    scene->addItem(multiplayerButton);
-
-
-    // create the play button
-    Button* singleplayerButton = new Button(QString("Play Singleplayer"));
-    int spxPos = this->width()/2 - singleplayerButton->boundingRect().width()/2;
-    int spyPos = 350;
-    singleplayerButton->setPos(spxPos,spyPos);
-    connect(singleplayerButton,SIGNAL(clicked()),this,SLOT(start()));
-    scene->addItem(singleplayerButton);
-
-    // create the quit button
-    Button* computerButton = new Button(QString("Play against computer"));
-    int cxPos = this->width()/2 - computerButton->boundingRect().width()/2;
-    int cyPos = 425;
-    computerButton->setPos(cxPos,cyPos);
-    connect(computerButton,SIGNAL(clicked()),this,SLOT(close()));
-    scene->addItem(computerButton);
-
-    // create the quit button
-    Button* settingsButton = new Button(QString("Settings"));
-    int sxPos = this->width()/2 - settingsButton->boundingRect().width()/2;
-    int syPos = 500;
-    settingsButton->setPos(sxPos,syPos);
-    connect(settingsButton,SIGNAL(clicked()),this,SLOT(close()));
-    scene->addItem(settingsButton);
-
-    // create the quit button
-    Button* loadButton = new Button(QString("Load Game"));
-    int lxPos = this->width()/2 - loadButton->boundingRect().width()/2;
-    int lyPos = 575;
-    loadButton->setPos(lxPos,lyPos);
-    connect(loadButton,SIGNAL(clicked()),this,SLOT(close()));
-    scene->addItem(loadButton);
-
-    // create the quit button
-    Button* quitButton = new Button(QString("Quit"));
-    int qxPos = this->width()/2 - quitButton->boundingRect().width()/2;
-    int qyPos = 650;
-    quitButton->setPos(qxPos,qyPos);
-    connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
-    scene->addItem(quitButton);
-
-
-}
-
-
 int Game::getSquareOnRowColumn(int row,int column){
     return (row-1)*8+(column-1);
 }
 
-
-bool Game::piecesOnPath(Square *choosenSquare){
-
-
-    return false;
-}
 void Game::placePiece(Square *choosenSquare){
 
 
@@ -165,7 +135,7 @@ void Game::mousePressEvent(QMouseEvent *event){
     if (gameStarted){
     if ((event->button() == Qt::LeftButton) && (pieceToPlace==nullptr))
     {
-
+        qDebug()<<"No kliknelimy";
         primarySquare[0]=getColumnFromPixels(event->x());
         primarySquare[1]=getRowFromPixels(event->y());
         if (chessboard.board.at(primarySquare)->piece !=nullptr &&
@@ -219,18 +189,14 @@ void Game::mousePressEvent(QMouseEvent *event){
 
     QGraphicsView::mousePressEvent(event);
 }
-
 void Game::changeTurn(){
     this->whiteTurn= !(this->whiteTurn);
 }
-
-
 char Game::getRowFromPixels(int X)
 {
     int row= 1+(X-chessboard.boardRowOffset)/chessboard.sizeOfSquare;
     return (row+'0');
 }
-
 char Game::getColumnFromPixels(int Y)
 {
     int asciAdd=(Y-chessboard.boardColumnOffset)/chessboard.sizeOfSquare;

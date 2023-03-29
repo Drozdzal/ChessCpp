@@ -8,8 +8,8 @@ class Board
 {
 
 public:
-    void startBoard();
-    void printSquare();
+    void createPieces();
+    void createBoard();
     void setPieceOnSquare(Piece* piece, std::string sqaurePosition);
 //private:
     std::map<std::string,Square*> board;

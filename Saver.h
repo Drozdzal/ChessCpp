@@ -15,9 +15,6 @@ public:
     void clearJson(QJsonObject* listToClear);
     int move_number=0;
 private:
-    enum SaveFormat {
-            Json, Binary
-        };
     QString savingPath=QString("D:/mgr/cpp/Chess/rozgrywki/rozgrywka.json");
     QJsonObject wholeGame;
     QJsonObject singleMove;

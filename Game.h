@@ -2,12 +2,15 @@
 #define GAME_H
 
 #include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QMouseEvent>
 #include <QMouseEvent>
 #include "Pieces.h"
 #include "Chessboard.h"
 #include "Saver.h"
+#include "Window.h"
+#include "LanServer.h"
+#include "GameMode.h"
+#include "LanClient.h"
 
 class Game: public QGraphicsView{
     Q_OBJECT
@@ -17,13 +20,13 @@ public:
 
     // public methods
 
-    void displayStart();
 
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent* event);
 
 
     void placePiece(Square* squareToPlace);
+
     bool piecesOnPath(Square *choosenSquare);
     void setPickedPiece();
     bool isWhiteTurn();
@@ -35,7 +38,9 @@ public:
     char getColumnFromPixels(int X);
     char getRowFromPixels(int Y);
     // public attributes
-    QGraphicsScene* scene;
+    Window* window;
+    MyServer* server;
+    MyClient* client;
     Piece* pieceToPlace=nullptr;
     Board chessboard;
     Saver saver;
@@ -44,8 +49,12 @@ public:
     bool gameStarted=false;
 
 public slots:
-    void start();
-
+    void multiplayer();
+    void singleplayer();
+    void loading();
+    void settings();
+    void computer();
+    void close();
 private:
     bool whiteTurn=true;
 
