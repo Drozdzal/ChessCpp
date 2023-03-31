@@ -5,15 +5,24 @@ MyServer::MyServer(QObject *parent) :
 {
 
     connect(this, &QTcpServer::newConnection, this,&MyServer::newClient);
-    connect(player1, &QTcpSocket::readyRead, this,&MyServer::receivedMsg);
 
 }
 
 void MyServer::newClient()
 {
     qDebug()<<"Added new client";
+    if (player1==nullptr)
+    {
     player1=this->nextPendingConnection();
-    clients.push_back(this->nextPendingConnection());
+    connect(player1, &QTcpSocket::readyRead, this,&MyServer::receivedPlayer1Msg);
+
+    }
+    else if (player2==nullptr)
+    {
+        player2=this->nextPendingConnection();
+        connect(player2, &QTcpSocket::readyRead, this,&MyServer::receivedPlayer2Msg);
+
+    }
 }
 
 void MyServer::startServer()
@@ -32,9 +41,17 @@ void MyServer::playersConnected()
 {
 }
 
-void MyServer::receivedMsg()
+void MyServer::receivedPlayer1Msg()
 {
     QByteArray data = player1->readAll();
-    qDebug()<<"Received" << data << "\n";
+    qDebug()<<"Received Player1msg" << data << "\n";
+    player2->write(data);
+}
+
+void MyServer::receivedPlayer2Msg()
+{
+    QByteArray data = player2->readAll();
+    qDebug()<<"Received Player2msg" << data << "\n";
+    player1->write(data);
 }
 

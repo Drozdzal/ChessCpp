@@ -1,17 +1,20 @@
 #ifndef COMPUTERPLAYER_H
 #define COMPUTERPLAYER_H
-#include "Chessboard.h"
+#include "Pieces.h"
+#include "Player.h"
 class ComputerPlayer{
-private:
+protected:
     std::string name;
     bool isWhite;
-    Board* chessboard;
 public:
+    ComputerPlayer();
     virtual std::string getNextMove()=0;
+    void setIsWhite(bool isWhite);
 };
 
-class SingleComputer:ComputerPlayer{
+class SimpleComputer: public ComputerPlayer{
 public:
+    SimpleComputer();
     virtual std::string getNextMove();
 
 };

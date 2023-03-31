@@ -70,6 +70,41 @@ void Window::displayChessboard(std::map<std::string,Square*> board){
     }
 }
 
+void Window::displayMultiplayer()
+{
+    scene->clear();
+    Button* createButton = new Button(QString("Create Game"));
+    int mbxPos = 600 - createButton->boundingRect().width()/2;
+    int mbyPos = 275;
+    createButton->setPos(mbxPos,mbyPos);
+    connect(createButton,&Button::clicked,this,&Window::createServer);
+    scene->addItem(createButton);
+
+
+    // create the play button
+    Button* joinButton = new Button(QString("Join online game"));
+    int spxPos = 600 - joinButton->boundingRect().width()/2;
+    int spyPos = 350;
+    joinButton->setPos(spxPos,spyPos);
+    connect(joinButton,&Button::clicked,this,&Window::joinServer);
+    scene->addItem(joinButton);
+
+    // create the quit button
+    Button* quitButton = new Button(QString("Quit"));
+    int cxPos = 600 - quitButton->boundingRect().width()/2;
+    int cyPos = 425;
+    quitButton->setPos(cxPos,cyPos);
+    connect(quitButton,&Button::clicked,this,&Window::close);
+    scene->addItem(quitButton);
+}
+
+void Window::displayCreateServer(){
+
+}
+
+void Window::displayJoinServer(){
+
+}
 void Window::displayPieces(std::list<Piece*> pieces)
 {
     for(auto it=pieces.begin();it!=pieces.end();it++){

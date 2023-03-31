@@ -38,6 +38,8 @@ public:
 
 public slots:
     void multiplayer();
+    void createServer();
+    void joinServer();
     void singleplayer();
     void loading();
     void settings();

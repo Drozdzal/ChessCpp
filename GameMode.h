@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "LanClient.h"
 #include "Chessboard.h"
+#include "ComputerPlayer.h"
 
 class GameMode{
 public:
@@ -47,22 +48,24 @@ public:
 class Singleplayer : public GameMode{
 public:
     Singleplayer(Player player1,Player player2);
-    virtual void swichTurn();
-    virtual void opponentMove();
+    void swichTurn() override;
+    void opponentMove() override;
 };
 class Multiplayer : public GameMode{
 private:
     MyClient* client;
 public:
-    virtual void swichTurn();
-    virtual void opponentMove();
+    Multiplayer(Player player1,Player player2);
+    void swichTurn() override;
+    void opponentMove() override;
 };
 class Computer : public GameMode{
 private:
-    Computer* computer;
+    SimpleComputer* computer;
 public:
-    virtual void swichTurn();
-    virtual void opponentMove();
+    Computer(Player player1);
+    void swichTurn() override;
+    void opponentMove() override;
 };
 
 #endif // GAMEMODE_H

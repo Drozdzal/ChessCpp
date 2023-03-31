@@ -19,6 +19,8 @@ Game::Game(QWidget *parent){
     this->saver=Saver();
     this->window = new Window();
     connect(window,&Window::multiplayer,this,&Game::multiplayer);
+    connect(window,&Window::createServer,this,&Game::createServer);
+    connect(window,&Window::joinServer,this,&Game::joinServer);
     connect(window,&Window::singleplayer,this,&Game::singleplayer);
     connect(window,&Window::loading,this,&Game::loading);
     connect(window,&Window::computer,this,&Game::computer);
@@ -33,12 +35,39 @@ Game::Game(QWidget *parent){
 // SLOTS
 void Game::multiplayer()
 {
-    this->server = new MyServer();
+    window->displayMultiplayer();
+
+}
+
+void Game::createServer(){
+    Player player1=Player("Michal",true);
+    Player player2=Player("Ewa",false);
+    server=new MyServer();
     server->startServer();
-
-
-    this->client= new MyClient();
-    client->connectToServer();
+    qDebug()<<"Creating server";
+    chessboard->createBoard();
+    chessboard->createPieces();
+    window->clearScene();
+    window->displayChessboard(chessboard->board);
+    window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    gameMode = new Multiplayer(player1,player2);
+    gameMode->setChessboard(chessboard);
+    inPlayingMode=true;
+    gameMode->gameStarted();
+}
+void Game::joinServer()
+{
+    Player player1=Player("Michal",true);
+    Player player2=Player("Ewa",false);
+    chessboard->createBoard();
+    chessboard->createPieces();
+    window->clearScene();
+    window->displayChessboard(chessboard->board);
+    window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    gameMode = new Multiplayer(player1,player2);
+    gameMode->setChessboard(chessboard);
+    inPlayingMode=true;
+    gameMode->gameStarted();
 
 }
 void Game::singleplayer()
@@ -71,7 +100,17 @@ void Game::settings()
 }
 void Game::computer()
 {
-    qDebug() << "Computer";
+    Player player1=Player("Michal",true);
+    chessboard->createBoard();
+    chessboard->createPieces();
+    window->clearScene();
+    window->displayChessboard(chessboard->board);
+    window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    gameMode=new Computer(player1);
+    gameMode->setChessboard(chessboard);
+    gameMode->gameStarted();
+    inPlayingMode=true;
+
 }
 void Game::close()
 {
@@ -95,12 +134,14 @@ void Game::mouseMoveEvent(QMouseEvent *event){
 }
 
 void Game::mousePressEvent(QMouseEvent *event){
+    qDebug()<<"Clicked";
     if ((pieceToMove==nullptr) && inPlayingMode){
         qDebug()<<"Proboje podniesc";
         pieceToMove=gameMode->canPickPiece(event->x(),event->y());
     }
     else if ((pieceToMove!=nullptr)&& inPlayingMode)
     {
+
         if (gameMode->executeMove(pieceToMove,event->x(),event->y()))
         {
 

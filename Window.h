@@ -19,10 +19,15 @@ public:
     void addPiece(Piece* piece);
     void deletePiece(Piece* piece);
     void clearScene();
+    void displayMultiplayer();
+    void displayCreateServer();
+    void displayJoinServer();
     QGraphicsScene *scene;
 
 signals:
     void multiplayer();
+    void createServer();
+    void joinServer();
     void singleplayer();
     void loading();
     void settings();

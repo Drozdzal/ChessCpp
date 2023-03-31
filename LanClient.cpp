@@ -14,9 +14,11 @@ void MyClient::connectToServer()
     } else {
         qDebug() << "Connected to server!";
     }
-    socket->waitForReadyRead(3000);
-    QByteArray response = socket->readAll();
-    qDebug() << "Server says:" << response;
+    connect(socket, &QTcpSocket::readyRead, this,&MyClient::receivedServerMsg);
+
+//    socket->waitForReadyRead(3000);
+//    QByteArray response = socket->readAll();
+//    qDebug() << "Server says:" << response;
 }
 
 void MyClient::sendMessage()
@@ -24,4 +26,11 @@ void MyClient::sendMessage()
     QString message = "Hello, server!";
     socket->write(message.toUtf8());
     socket->flush();
+    qDebug()<<"Client sent message";
 }
+
+void MyClient::receivedServerMsg()
+        {
+    QByteArray data = socket->readAll();
+    qDebug()<<"Received msg from oponent" << data << "\n";
+        }

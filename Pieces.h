@@ -20,6 +20,7 @@ public:
     std::string possiblePosition ="00";
     std::list<std::string> allPossibleMoves;
     bool isSquareOccupied(std::string desiredSquare);
+    bool isSquareOccupiedByAlly(std::string desiredSquare);
     bool movePossible(std::string desiredSquare);
     static std::list<Piece*> allFigures;
 

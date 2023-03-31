@@ -1,5 +1,7 @@
 #include "GameMode.h"
 #include "Pieces.h"
+#include "LanClient.h"
+
 GameMode::GameMode(Player player1,Player player2){
     this->player1 = player1;
     this->player2 = player2;
@@ -49,7 +51,6 @@ bool GameMode::isMate(Piece* piece){
        for(auto it=Piece::allFigures.begin();it!=piece->Piece::allFigures.end();it++)
        {
           if ((*it)!=nullptr){
-              qDebug()<<"Sprawdzam";
 // COS TA PETLA PSUJE
 //          if(((*it)->getIsWhite()!=king->getIsWhite()) && ((*it)->movePossible(king->actualPosition)))
 //          {
@@ -85,10 +86,44 @@ void Singleplayer::swichTurn(){
 void Singleplayer::opponentMove(){
 }
 void Multiplayer::swichTurn(){
+    client->sendMessage();
 }
 void Multiplayer::opponentMove(){
 }
+Multiplayer::Multiplayer(Player player1,Player player2)
+{
+    activePlayer=&player1;
+    client = new MyClient();
+    client->connectToServer();
+}
+
+Computer::Computer(Player player1)
+{
+    activePlayer=&player1;
+    computer= new SimpleComputer();
+    computer->setIsWhite(false);
+}
 void Computer::swichTurn(){
+    std::string computerMove="0000";
+    computerMove=computer->getNextMove();
+    std::string primarySquare="00";
+    primarySquare[0] = computerMove[0];
+    primarySquare[1] = computerMove[1];
+    Piece* piece=chessboard->board.at(primarySquare)->piece;
+    std::string secondarySquare ="00";
+    std::cout<<"Primary square"<< primarySquare;
+    secondarySquare[0]=computerMove[2];
+    secondarySquare[1]=computerMove[3];
+    std::cout<<"Secondary square"<< secondarySquare;
+    piece->setX(chessboard->board.at(secondarySquare)->getX());
+    piece->setY(chessboard->board.at(secondarySquare)->getY());
+    piece->actualPosition=secondarySquare;
+    chessboard->board.at(primarySquare)->piece=nullptr;
+    chessboard->board.at(primarySquare)->setOccupied(false);
+    chessboard->board.at(secondarySquare)->piece = piece;
+    chessboard->board.at(secondarySquare)->setOccupied(true);
+    std::cout << "moved" << "\n";
+
 }
 void Computer::opponentMove(){
 }
@@ -129,12 +164,14 @@ bool GameMode::executeMove(Piece* piece, int X,int Y){
         {
             qDebug()<<"atakuje";
             attackPiece(piece,X,Y);
+            piece->getPossibleMoves();
             return true;
         }
         else
         {
             qDebug()<<"przenosze";
             movePiece(piece,X,Y);
+            piece->getPossibleMoves();
             return true;
         }
     }

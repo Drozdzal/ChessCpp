@@ -11,8 +11,6 @@ Piece::Piece(QGraphicsItem *parent): QObject(), QGraphicsPixmapItem(parent){
 
     allFigures.push_back(this);
 }
-
-
 void Piece::changeFirstMove()
 {
     firstMove=false;
@@ -20,8 +18,6 @@ void Piece::changeFirstMove()
 bool Piece::getIsWhite(){
     return isWhite;
 }
-
-
 bool Piece::isSquareOccupied(std::string desiredSquare)
 {
     for(auto it = allFigures.begin(); it != allFigures.end(); it++){
@@ -35,36 +31,109 @@ bool Piece::isSquareOccupied(std::string desiredSquare)
     return false;
 }
 
+
+bool Piece::isSquareOccupiedByAlly(std::string desiredSquare)
+{
+    for(auto it = allFigures.begin(); it != allFigures.end(); it++){
+
+    if (desiredSquare==(*it)->actualPosition)
+        {
+        if((*it)->getIsWhite()==this->getIsWhite())
+            {
+                return true;
+            }
+        else false;
+        }
+    }
+    return false;
+}
 bool Piece::getFirstMove()
 {
     return this->firstMove;
 }
-
 bool Piece::movePossible(std::string desiredSquare)
 {
-    if (allPossibleMoves.empty())
+    if (allPossibleMoves.size()<1)
     {
         getPossibleMoves();
     }
     bool found = (std::find(allPossibleMoves.begin(), allPossibleMoves.end(), desiredSquare) != allPossibleMoves.end());
     return found;
 }
+void Piece::getPossibleMoves()
+{
+
+}
+
+
 Pawn::Pawn(bool isWhite){
     this->isWhite=isWhite;
     if (isWhite){
         this->setPixmap(QPixmap(":/bazowy/bialy_pionek.png").scaled(75,75));
     }
     else{
+
         this->setPixmap(QPixmap(":/bazowy/czarny_pionek.png").scaled(75,75));
     }
 }
-void Piece::getPossibleMoves()
-{
+Knight::Knight(bool isWhite){
+    this->isWhite=isWhite;
+    if (isWhite){
+        this->setPixmap(QPixmap(":/bazowy/bialy_goniec.png").scaled(75,75));
+    }
+    else{
+        this->setPixmap(QPixmap(":/bazowy/czarny_goniec.png").scaled(75,75));
+    }
+
+}
+Bishop::Bishop(bool isWhite){
+    this->isWhite=isWhite;
+    if (isWhite){
+        this->setPixmap(QPixmap(":/bazowy/bialy_skoczek.png").scaled(75,75));
+    }
+    else{
+        this->setPixmap(QPixmap(":/bazowy/czarny_skoczek.png").scaled(75,75));
+    }
+}
+Rook::Rook(bool isWhite){
+    this->isWhite=isWhite;
+    if (isWhite){
+        this->setPixmap(QPixmap(":/bazowy/bialy_wieza.png").scaled(75,75));
+    }
+    else{
+
+        this->setPixmap(QPixmap(":/bazowy/czarny_wieza.png").scaled(75,75));
+    }
+
+}
+King::King(bool isWhite){
+    this->isWhite=isWhite;
+    if (isWhite){
+        this->setPixmap(QPixmap(":/bazowy/bialy_krol.png").scaled(75,75));
+    }
+    else{
+        this->setPixmap(QPixmap(":/bazowy/czarny_krol.png").scaled(75,75));
+    }
+
+}
+Queen::Queen(bool isWhite){
+    this->isWhite=isWhite;
+    if (isWhite){
+        this->setPixmap(QPixmap(":/bazowy/bialy_hetman.png").scaled(75,75));
+    }
+    else{
+
+        this->setPixmap(QPixmap(":/bazowy/czarny_hetman.png").scaled(75,75));
+    }
 
 }
 
+
+
 void Pawn::getPossibleMoves()
 {
+//    this->allPossibleMoves.clear();
+
     int goForward;
     char column,row;
     column = actualPosition[0];
@@ -106,20 +175,10 @@ void Pawn::getPossibleMoves()
                         allPossibleMoves.push_front(possiblePosition);
                     }
 }
-
-
-Knight::Knight(bool isWhite){
-    this->isWhite=isWhite;
-    if (isWhite){
-        this->setPixmap(QPixmap(":/bazowy/bialy_goniec.png").scaled(75,75));
-    }
-    else{
-        this->setPixmap(QPixmap(":/bazowy/czarny_goniec.png").scaled(75,75));
-    }
-}
-
+// OGARNAC TE RUCHY
 void Knight::getPossibleMoves()
 {
+//    this->allPossibleMoves.clear();
 
     int goForward;
     char column,row;
@@ -129,34 +188,34 @@ void Knight::getPossibleMoves()
                 goForward=i;
                 possiblePosition[0]=(char) ((int) (column) - 1*goForward);
                 possiblePosition[1]=(char) (row - 2 * goForward);
-                allPossibleMoves.push_front(possiblePosition);
+                if (!isSquareOccupiedByAlly(possiblePosition))
+                {
+                    allPossibleMoves.push_front(possiblePosition);
+                }
                 possiblePosition[0]=(char) ((int) (column) - 2*goForward);
                 possiblePosition[1]=(char) (row - 1 * goForward);
-                allPossibleMoves.push_front(possiblePosition);
+                if (!isSquareOccupiedByAlly(possiblePosition))
+                {
+                    allPossibleMoves.push_front(possiblePosition);
+                }
                 possiblePosition[0]=(char) ((int) (column) - 1*goForward);
                 possiblePosition[1]=(char) (row + 2 * goForward);
-                allPossibleMoves.push_front(possiblePosition);
+                if (!isSquareOccupiedByAlly(possiblePosition))
+                {
+                    allPossibleMoves.push_front(possiblePosition);
+                }
                 possiblePosition[0]=(char) ((int) (column) - 2*goForward);
                 possiblePosition[1]=(char) (row + 1 * goForward);
-                allPossibleMoves.push_front(possiblePosition);
+                if (!isSquareOccupiedByAlly(possiblePosition))
+                {
+                    allPossibleMoves.push_front(possiblePosition);
+                }
 
             }
 }
-
-
-Bishop::Bishop(bool isWhite){
-    this->isWhite=isWhite;
-    if (isWhite){
-        this->setPixmap(QPixmap(":/bazowy/bialy_skoczek.png").scaled(75,75));
-    }
-    else{
-        this->setPixmap(QPixmap(":/bazowy/czarny_skoczek.png").scaled(75,75));
-    }
-}
-
-
 void Bishop::getPossibleMoves()
 {
+//    this->allPossibleMoves.clear();
 
     char column,row;
     column = actualPosition[0];
@@ -166,11 +225,15 @@ void Bishop::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
             for(int i=1; i<=7;i++)
@@ -178,11 +241,17 @@ void Bishop::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
+
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
+
             }
 
 
@@ -191,11 +260,15 @@ void Bishop::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -204,26 +277,20 @@ void Bishop::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 }
-
-Rook::Rook(bool isWhite){
-    this->isWhite=isWhite;
-    if (isWhite){
-        this->setPixmap(QPixmap(":/bazowy/bialy_wieza.png").scaled(75,75));
-    }
-    else{
-        this->setPixmap(QPixmap(":/bazowy/czarny_wieza.png").scaled(75,75));
-    }
-}
-
 void Rook::getPossibleMoves()
 {
+//    this->allPossibleMoves.clear();
 
     char column,row;
     column = actualPosition[0];
@@ -233,11 +300,15 @@ void Rook::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column));
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
             for(int i=1; i<=7;i++)
@@ -245,11 +316,15 @@ void Rook::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -258,11 +333,15 @@ void Rook::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -271,28 +350,20 @@ void Rook::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column));
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 }
-
-
-King::King(bool isWhite){
-    this->isWhite=isWhite;
-    if (isWhite){
-        this->setPixmap(QPixmap(":/bazowy/bialy_krol.png").scaled(75,75));
-    }
-    else{
-        this->setPixmap(QPixmap(":/bazowy/czarny_krol.png").scaled(75,75));
-    }
-}
-
 void King::getPossibleMoves()
 {
-
+//    this->allPossibleMoves.clear();
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
@@ -309,26 +380,14 @@ void King::getPossibleMoves()
                        allPossibleMoves.push_front(possiblePosition);
                    }
                 }
-
+                allPossibleMoves.push_front(possiblePosition);//TO DELL
 
             }
 
 }
-
-
-Queen::Queen(bool isWhite){
-    this->isWhite=isWhite;
-    if (isWhite){
-        this->setPixmap(QPixmap(":/bazowy/bialy_hetman.png").scaled(75,75));
-    }
-    else{
-        this->setPixmap(QPixmap(":/bazowy/czarny_hetman.png").scaled(75,75));
-    }
-}
-
 void Queen::getPossibleMoves()
 {
-
+    this->allPossibleMoves.clear();
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
@@ -337,11 +396,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
             for(int i=1; i<=7;i++)
@@ -349,11 +412,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -362,11 +429,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -375,11 +446,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
     for(int i=1; i<=7;i++)
@@ -387,11 +462,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column));
                 possiblePosition[1]=(char)(row-1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
             for(int i=1; i<=7;i++)
@@ -399,11 +478,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -412,11 +495,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 
 
@@ -425,11 +512,15 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column));
                 possiblePosition[1]=(char)(row+1*i);
-                allPossibleMoves.push_front(possiblePosition);
                 if (isSquareOccupied(possiblePosition))
                 {
+                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
                     break;
                 }
+                allPossibleMoves.push_front(possiblePosition);
             }
 }
 

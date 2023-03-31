@@ -17,7 +17,8 @@ public:
     void sendMessage();
 //signals:
 
-//public slots:
+public slots:
+    void receivedServerMsg();
 //    void connected();
 //    void disconnected();
 //    void readyRead();

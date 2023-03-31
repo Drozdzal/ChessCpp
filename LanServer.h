@@ -7,7 +7,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include "MultiThread.h"
-
+#include "Player.h"
 class MyServer : public QTcpServer
 {
     Q_OBJECT
@@ -16,7 +16,6 @@ public:
     void startServer();
     QTcpSocket* player1=nullptr;
     QTcpSocket* player2=nullptr;
-    std::list<QTcpSocket *> clients;
     void playersConnected();
 
 signals:
@@ -24,7 +23,8 @@ signals:
 
 public slots:
     void newClient();
-    void receivedMsg();
+    void receivedPlayer1Msg();
+    void receivedPlayer2Msg();
 
 protected:
 
