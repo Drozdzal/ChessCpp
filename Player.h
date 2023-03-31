@@ -13,6 +13,7 @@ public:
     Player(std::string,bool);
 bool PlayerInDatabase();
 void saveResultInDb();
+void setIsWhite(bool isWhite);
 bool getIsWhite();
 std::string getName();
 };

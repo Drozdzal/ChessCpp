@@ -42,10 +42,10 @@ bool Piece::getFirstMove()
 
 bool Piece::movePossible(std::string desiredSquare)
 {
-//    for(auto it=allPossibleMoves.begin(); it!=allPossibleMoves.end();it++)
-//    {
-//        std::cout << (*it);
-//    }
+    if (allPossibleMoves.empty())
+    {
+        getPossibleMoves();
+    }
     bool found = (std::find(allPossibleMoves.begin(), allPossibleMoves.end(), desiredSquare) != allPossibleMoves.end());
     return found;
 }
@@ -69,9 +69,8 @@ void Pawn::getPossibleMoves()
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
-    std::cout<<"column" << column <<"\n";
-    std::cout<<"row" << row <<"\n";
-    allPossibleMoves.clear();
+
+
     if (getIsWhite()) {
                     goForward=1;
                 }
@@ -84,7 +83,6 @@ void Pawn::getPossibleMoves()
                     if (!isSquareOccupied(possiblePosition)) {
                         allPossibleMoves.push_front(possiblePosition);
                     }
-                     std::cout <<"Possible position "  << possiblePosition <<'\n';
                     possiblePosition[0]=column;
                     possiblePosition[1]=(char)((int)row-2*goForward);
 
@@ -92,7 +90,6 @@ void Pawn::getPossibleMoves()
 
                         allPossibleMoves.push_front(possiblePosition);
                     }
-                     std::cout <<"Possible position "  << possiblePosition <<'\n';
 
 
                     possiblePosition[0]=(char)((int)(column)-1);
@@ -101,19 +98,12 @@ void Pawn::getPossibleMoves()
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
-                    std::cout <<"Possible position "  << possiblePosition <<'\n';
 
                     possiblePosition[0]=(char)((int)(column)+1);
                     possiblePosition[1]=(char)((int)row-1*goForward);
                     if (isSquareOccupied(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
-                    }
-                     std::cout <<"Possible position "  << possiblePosition <<'\n';
-
-                    for(auto it=allPossibleMoves.begin(); it!=allPossibleMoves.end();it++)
-                    {
-//                        std::cout <<"Possible position "  << (*it) <<'\n';
                     }
 }
 
@@ -130,7 +120,7 @@ Knight::Knight(bool isWhite){
 
 void Knight::getPossibleMoves()
 {
-    allPossibleMoves.clear();
+
     int goForward;
     char column,row;
     column = actualPosition[0];
@@ -167,7 +157,7 @@ Bishop::Bishop(bool isWhite){
 
 void Bishop::getPossibleMoves()
 {
-    allPossibleMoves.clear();
+
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
@@ -234,7 +224,7 @@ Rook::Rook(bool isWhite){
 
 void Rook::getPossibleMoves()
 {
-    allPossibleMoves.clear();
+
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
@@ -302,7 +292,7 @@ King::King(bool isWhite){
 
 void King::getPossibleMoves()
 {
-    allPossibleMoves.clear();
+
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];
@@ -312,7 +302,15 @@ void King::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row-1*j);
-                allPossibleMoves.push_front(possiblePosition);
+                for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++)
+                {
+                   if(((*it)->getIsWhite()!=this->getIsWhite()) && ((*it)->movePossible(this->actualPosition)))
+                   {
+                       allPossibleMoves.push_front(possiblePosition);
+                   }
+                }
+
+
             }
 
 }
@@ -330,7 +328,7 @@ Queen::Queen(bool isWhite){
 
 void Queen::getPossibleMoves()
 {
-    allPossibleMoves.clear();
+
     char column,row;
     column = actualPosition[0];
     row = actualPosition[1];

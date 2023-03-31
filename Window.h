@@ -5,7 +5,7 @@
 #include "Square.h"
 #include "Pieces.h"
 #include <QWidget>
-
+#include "Pieces.h"
 
 class Window : public QObject
 {
@@ -15,7 +15,7 @@ public:
     void displayMenu();
     void displayChessboard(std::map<std::string,Square*> board);
     void displayPieces(std::list<Piece*> pieces);
-    void actualizeView();
+    void actualizeView(std::map<std::string,Square*> board,std::list<Piece*> pieces);
     void addPiece(Piece* piece);
     void deletePiece(Piece* piece);
     void clearScene();

@@ -23,30 +23,18 @@ public:
 
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent* event);
-
-
-    void placePiece(Square* squareToPlace);
-
-    bool piecesOnPath(Square *choosenSquare);
-    void setPickedPiece();
-    bool isWhiteTurn();
-    void changeTurn();
-    void movePiece();
-    void attackPiece();
+    bool isMovePossible(int X,int Y);
+    void actualizeView();
     void backToPrimaryPosition();
-    int getSquareOnRowColumn(int row,int column);
-    char getColumnFromPixels(int X);
-    char getRowFromPixels(int Y);
     // public attributes
     Window* window;
     MyServer* server;
     MyClient* client;
-    Piece* pieceToPlace=nullptr;
-    Board chessboard;
+    Piece* pieceToMove=nullptr;
+    Board* chessboard;
     Saver saver;
-    std::string primarySquare="00";
-    std::string secondarySquare="00";
-    bool gameStarted=false;
+    GameMode* gameMode; // TUTAJ PAMIETAC O MOZLIWYM PROBLEMIE w innych niz singleplayer;
+    bool inPlayingMode=false;
 
 public slots:
     void multiplayer();

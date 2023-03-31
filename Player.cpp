@@ -21,3 +21,8 @@ std::string Player::getName()
 {
     return "tak";
 }
+
+void Player::setIsWhite(bool isWhite)
+{
+    this->isWhite=isWhite;
+}

@@ -69,9 +69,7 @@ void Window::displayChessboard(std::map<std::string,Square*> board){
         scene->addItem((it->second));
     }
 }
-void Window::actualizeView(){
 
-}
 void Window::displayPieces(std::list<Piece*> pieces)
 {
     for(auto it=pieces.begin();it!=pieces.end();it++){
@@ -83,7 +81,21 @@ void Window::addPiece(Piece* piece)
 {
     scene->addItem(piece);
 }
+void Window::actualizeView(std::map<std::string,Square*> board,std::list<Piece*> pieces)
+{
+    try {
+        scene->clear();
+        displayChessboard(board);
+        displayPieces(pieces);
+    } catch (std::exception& e) {
+        // Handle the exception
+        qDebug() << "Exception caught: " << e.what();
+    } catch (...) {
+        // Handle any other type of exception
+        qDebug() << "Unknown exception caught";
+    }
 
+}
 void Window::deletePiece(Piece* piece)
 {
     scene->removeItem(piece);
