@@ -16,17 +16,18 @@ void GameMode::setChessboard(Board *chessboard)
 }
 void GameMode::chooseFirst(){
     bool player1First= std::rand()%2;
+    qDebug()<<"Choosing first player";
     if (player1First)
     {
+        qDebug()<<"First player player1";
         activePlayer=&player1;
-        player1.setIsWhite(true);
-        player2.setIsWhite(false);
+
     }
     else
     {
+        qDebug()<<"First player player2";
         activePlayer=&player2;
-        player1.setIsWhite(false);
-        player2.setIsWhite(true);
+
     }
 }
 
@@ -72,6 +73,7 @@ Singleplayer::Singleplayer(Player player1,Player player2){
        this->isGameStarted=true;
    }
 void Singleplayer::swichTurn(){
+    qDebug()<<"Singleplayer switch turn";
     if (activePlayer==&player1)
     {
         qDebug()<<"pl1changing to 2";
@@ -86,15 +88,21 @@ void Singleplayer::swichTurn(){
 void Singleplayer::opponentMove(){
 }
 void Multiplayer::swichTurn(){
-    client->sendMessage();
+    client->sendMessage(this->currentChange);
+    qDebug()<<"Multiplayer switch turn";
+
 }
 void Multiplayer::opponentMove(){
 }
-Multiplayer::Multiplayer(Player player1,Player player2)
+Multiplayer::Multiplayer(Player player1)
 {
+    qDebug()<<"construktor invoked";
     activePlayer=&player1;
+    qDebug()<<"constructor active player"<<activePlayer->getIsWhite();
     client = new MyClient();
     client->connectToServer();
+    connect(client,&MyClient::opponentMove,this,&Multiplayer::receivedMove);
+
 }
 
 Computer::Computer(Player player1)
@@ -104,16 +112,16 @@ Computer::Computer(Player player1)
     computer->setIsWhite(false);
 }
 void Computer::swichTurn(){
-    std::string computerMove="0000";
-    computerMove=computer->getNextMove();
+    std::string currentChange="0000";
+    currentChange=computer->getNextMove();
     std::string primarySquare="00";
-    primarySquare[0] = computerMove[0];
-    primarySquare[1] = computerMove[1];
+    primarySquare[0] = currentChange[0];
+    primarySquare[1] = currentChange[1];
     Piece* piece=chessboard->board.at(primarySquare)->piece;
     std::string secondarySquare ="00";
     std::cout<<"Primary square"<< primarySquare;
-    secondarySquare[0]=computerMove[2];
-    secondarySquare[1]=computerMove[3];
+    secondarySquare[0]=currentChange[2];
+    secondarySquare[1]=currentChange[3];
     std::cout<<"Secondary square"<< secondarySquare;
     piece->setX(chessboard->board.at(secondarySquare)->getX());
     piece->setY(chessboard->board.at(secondarySquare)->getY());
@@ -131,9 +139,13 @@ void GameMode::movePiece(Piece* piece,int X,int Y)
      {
            std::string primarySquare = piece->actualPosition;
            std::string secondarySquare ="00";
+           currentChange[0]=primarySquare[0];
+           currentChange[1]=primarySquare[1];
            std::cout<<"Primary square"<< primarySquare;
            secondarySquare[0]=getColumnFromPixels(X);
            secondarySquare[1]=getRowFromPixels(Y);
+           currentChange[2]=getColumnFromPixels(X);
+           currentChange[3]=getRowFromPixels(Y);
            std::cout<<"Secondary square"<< secondarySquare;
            piece->setX(chessboard->board.at(secondarySquare)->getX());
            piece->setY(chessboard->board.at(secondarySquare)->getY());
@@ -216,10 +228,12 @@ Piece* GameMode::canPickPiece(int X,int Y)
     std::string primarySquare="00";
     primarySquare[0]=getColumnFromPixels(X);
     primarySquare[1]=getRowFromPixels(Y);
+    qDebug()<<"can pick " << activePlayer->getIsWhite();
     if (chessboard->board.at(primarySquare)->piece !=nullptr )
     {
-        if (!isMate(chessboard->board.at(primarySquare)->piece)){
-        if (activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) return chessboard->board.at(primarySquare)->piece;
+        if (/*!isMate(chessboard->board.at(primarySquare)->piece)*/ true){
+        qDebug()<<"active player"<<activePlayer->getIsWhite();
+        if (this->activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) return chessboard->board.at(primarySquare)->piece;
         else return nullptr;
     }
     }
@@ -243,6 +257,14 @@ char GameMode::getColumnFromPixels(int Y)
 
 bool GameMode::gameStarted()
 {
-    chooseFirst();
+//    chooseFirst();
     return this->isGameStarted;
+}
+
+void Multiplayer::receivedMove(std::string move)
+{
+    qDebug()<<"move to perform"<<QString::fromStdString(move);
+    std::string from = move.substr(0, 2);
+    std::string to= move.substr(2,4);
+    executeMove(chessboard->board.at(from)->piece,chessboard->board.at(to)->getX(),chessboard->board.at(to)->getY());
 }

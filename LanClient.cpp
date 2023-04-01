@@ -21,10 +21,10 @@ void MyClient::connectToServer()
 //    qDebug() << "Server says:" << response;
 }
 
-void MyClient::sendMessage()
+void MyClient::sendMessage(std::string message)
 {
-    QString message = "Hello, server!";
-    socket->write(message.toUtf8());
+    QString qMessage = QString::fromStdString(message);
+    socket->write(qMessage.toUtf8());
     socket->flush();
     qDebug()<<"Client sent message";
 }
@@ -33,4 +33,5 @@ void MyClient::receivedServerMsg()
         {
     QByteArray data = socket->readAll();
     qDebug()<<"Received msg from oponent" << data << "\n";
+    emit opponentMove(data.toStdString());
         }

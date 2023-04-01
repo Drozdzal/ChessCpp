@@ -1,11 +1,13 @@
 #ifndef GAMEMODE_H
 #define GAMEMODE_H
+#include <QObject>
 #include "Player.h"
 #include "LanClient.h"
 #include "Chessboard.h"
 #include "ComputerPlayer.h"
 
-class GameMode{
+class GameMode: public QObject{
+    Q_OBJECT
 public:
 GameMode(Player player1,Player player2);
 GameMode();
@@ -16,6 +18,7 @@ protected:
    Board* chessboard;
    bool isGameStarted;
    Piece* pieceToRemove=nullptr;
+   std::string currentChange="0000";
 public:
    bool gameStarted();
    void setChessboard(Board* chessboard);
@@ -46,20 +49,25 @@ public:
 };
 
 class Singleplayer : public GameMode{
+    Q_OBJECT
 public:
     Singleplayer(Player player1,Player player2);
     void swichTurn() override;
     void opponentMove() override;
 };
 class Multiplayer : public GameMode{
+    Q_OBJECT
 private:
     MyClient* client;
 public:
-    Multiplayer(Player player1,Player player2);
+    Multiplayer(Player player1);
     void swichTurn() override;
     void opponentMove() override;
+public slots:
+    void receivedMove(std::string move);
 };
 class Computer : public GameMode{
+    Q_OBJECT
 private:
     SimpleComputer* computer;
 public:

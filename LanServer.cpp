@@ -45,13 +45,19 @@ void MyServer::receivedPlayer1Msg()
 {
     QByteArray data = player1->readAll();
     qDebug()<<"Received Player1msg" << data << "\n";
+    if (player2!=nullptr)
+    {
     player2->write(data);
+    }
 }
 
 void MyServer::receivedPlayer2Msg()
 {
     QByteArray data = player2->readAll();
     qDebug()<<"Received Player2msg" << data << "\n";
+    if (player1!=nullptr)
+    {
     player1->write(data);
+    }
 }
 

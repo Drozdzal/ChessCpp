@@ -14,8 +14,9 @@ class MyClient : public QObject
 public:
     explicit MyClient(QObject *parent = 0);
     void connectToServer();
-    void sendMessage();
-//signals:
+    void sendMessage(std::string message);
+signals:
+    void opponentMove(std::string move);
 
 public slots:
     void receivedServerMsg();
