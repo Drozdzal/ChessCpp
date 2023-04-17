@@ -1,5 +1,6 @@
 #include "Window.h"
-
+#include "QFileDialog"
+#include "QPushButton"
 Window::Window(QObject* parent): QObject(parent){
     scene=new QGraphicsScene();
     scene->setSceneRect(0,0,1200,900);
@@ -65,8 +66,14 @@ void Window::displayMenu()
     scene->addItem(quitButton);
 }
 void Window::displayChessboard(std::map<std::string,Square*> board){
+    try{
     for(auto it=board.begin();it!=board.end();it++){
         scene->addItem((it->second));
+    }
+    }
+    catch (QException& e) {
+        // Handle the exception
+        qDebug() << "Caught exception: " << e.what();
     }
 }
 
@@ -107,7 +114,7 @@ void Window::displayJoinServer(){
 }
 void Window::displayPieces(std::list<Piece*> pieces)
 {
-    for(auto it=pieces.begin();it!=pieces.end();it++){
+    for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++){
         scene->addItem(*it);
     }
 }
@@ -131,11 +138,41 @@ void Window::actualizeView(std::map<std::string,Square*> board,std::list<Piece*>
     }
 
 }
+
+QString Window::loadingWindow()
+{
+    QString folderPath = ":/bazowy"; // replace with your desired folder path
+
+    Button* nextMoveButton = new Button("Next Move");
+            connect(nextMoveButton, &Button::clicked, this, &Window::nextMove);
+
+            scene->addItem(nextMoveButton);
+            nextMoveButton->setPos(scene->width() - nextMoveButton->boundingRect().width() - 100, 300); // Position on the right side
+
+    Button* previousMoveButton = new Button("Previous Move");
+                    connect(previousMoveButton, &Button::clicked, this, &Window::previousMove);
+
+                    scene->addItem(previousMoveButton);
+                    previousMoveButton->setPos(scene->width() - previousMoveButton->boundingRect().width() - 100, 500); // Position on the right side
+
+       // Open a file dialog to allow the player to choose a file
+    QString filePath = QFileDialog::getOpenFileName(nullptr, tr("Choose a file"), folderPath);
+    return filePath;
+    // Open a file dialog to allow the player to choose a file
+}
 void Window::deletePiece(Piece* piece)
 {
     scene->removeItem(piece);
 }
+void Window::deletePieces(std::list<Piece*> pieces)
+{
+    for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++){
+        scene->removeItem(*it);
+    }
+
+}
 void Window::clearScene()
 {
     scene->clear();
+
 }

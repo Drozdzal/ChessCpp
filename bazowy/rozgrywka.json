@@ -88,7 +88,7 @@
             "isWhite": false,
             "pieceName": "class Pawn"
         },
-        "F7": {
+        "F5": {
             "isWhite": true,
             "pieceName": "class Pawn"
         },
@@ -104,7 +104,7 @@
             "isWhite": false,
             "pieceName": "class Pawn"
         },
-        "G5": {
+        "G7": {
             "isWhite": true,
             "pieceName": "class Pawn"
         },

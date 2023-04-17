@@ -6,6 +6,8 @@
 #include "Pieces.h"
 #include <QWidget>
 #include "Pieces.h"
+#include <QtCore/QException>
+
 
 class Window : public QObject
 {
@@ -18,10 +20,12 @@ public:
     void actualizeView(std::map<std::string,Square*> board,std::list<Piece*> pieces);
     void addPiece(Piece* piece);
     void deletePiece(Piece* piece);
+    void deletePieces(std::list<Piece*> pieces);
     void clearScene();
     void displayMultiplayer();
     void displayCreateServer();
     void displayJoinServer();
+    QString loadingWindow();
     QGraphicsScene *scene;
 
 signals:
@@ -30,6 +34,8 @@ signals:
     void joinServer();
     void singleplayer();
     void loading();
+    void nextMove();
+    void previousMove();
     void settings();
     void computer();
     void close();

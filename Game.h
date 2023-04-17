@@ -7,6 +7,7 @@
 #include "Pieces.h"
 #include "Chessboard.h"
 #include "Saver.h"
+#include "Loader.h"
 #include "Window.h"
 #include "LanServer.h"
 #include "GameMode.h"
@@ -33,6 +34,7 @@ public:
     Piece* pieceToMove=nullptr;
     Board* chessboard;
     Saver saver;
+    Loader loader;
     GameMode* gameMode; // TUTAJ PAMIETAC O MOZLIWYM PROBLEMIE w innych niz singleplayer;
     bool inPlayingMode=false;
 
@@ -42,9 +44,12 @@ public slots:
     void joinServer();
     void singleplayer();
     void loading();
+    void nextMove();
+    void previousMove();
     void settings();
     void computer();
     void close();
+    void quitGame();
 private:
     bool whiteTurn=true;
 

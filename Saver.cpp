@@ -6,11 +6,15 @@
 void Saver::save()
 {
     QFile saveFile(savingPath);
-    if (saveFile.open(QIODevice::WriteOnly))
+    if (saveFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        std::cout<<"Saving file";
+        qDebug()<<"Saving file";
         saveFile.write(QJsonDocument(wholeGame).toJson());
         saveFile.close();
+    }
+    else
+    {
+        qDebug()<<"Error in file creation";
     }
 }
 

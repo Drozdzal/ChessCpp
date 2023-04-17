@@ -22,7 +22,9 @@ public:
     bool isSquareOccupied(std::string desiredSquare);
     bool isSquareOccupiedByAlly(std::string desiredSquare);
     bool movePossible(std::string desiredSquare);
+    bool moveExist(std::string desiredMove);
     static std::list<Piece*> allFigures;
+
 
 protected:
     bool isWhite;

@@ -1,7 +1,7 @@
 #include "GameMode.h"
 #include "Pieces.h"
 #include "LanClient.h"
-
+#include <QMessageBox>
 GameMode::GameMode(Player player1,Player player2){
     this->player1 = player1;
     this->player2 = player2;
@@ -30,10 +30,6 @@ void GameMode::chooseFirst(){
 
     }
 }
-
-
-
-
 void GameMode::start(){
 }
 void GameMode::end(){
@@ -46,6 +42,7 @@ bool GameMode::isMate(Piece* piece){
           if ((*it)->getIsWhite()==piece->getIsWhite()&&
                typeid(**it).name()==typeid(King).name()){
               king=(*it);
+              qDebug()<<"King found";
           }
        }
 
@@ -53,20 +50,47 @@ bool GameMode::isMate(Piece* piece){
        {
           if ((*it)!=nullptr){
 // COS TA PETLA PSUJE
-//          if(((*it)->getIsWhite()!=king->getIsWhite()) && ((*it)->movePossible(king->actualPosition)))
-//          {
-//              qDebug()<<"Krol zagrozony";
-//              return true;
-//          }
+              (*it)->getPossibleMoves();
+          if(((*it)->getIsWhite()!=king->getIsWhite()) && ((*it)->movePossible(king->actualPosition)))
+          {
+              qDebug()<<"Krol zagrozony";
+              return true;
           }
-          else{
-                   qDebug()<<"Nie sprawdzam";
+
           }
+\
+
+       }
+       qDebug()<<"Krol safe";
+       return false;
+   }
+bool GameMode::isFinished(Piece *piece)
+{
+    std::string previousPose="00";
+    std::string nextPose="00";
+    for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++)
+    {
+       if ((*it)->getIsWhite()==piece->getIsWhite()){
+           qDebug()<<"Checking next piece";
+           (*it)->getPossibleMoves();
+                   for (const std::string& move :(*it)->allPossibleMoves) {
+                       qDebug()<<"Checking next move";
+
+                        previousPose=(*it)->actualPosition;
+                        (*it)->actualPosition=move;
+                        if(!isMate(*it))
+                        {
+                            qDebug()<<"krola uratuje sie";
+                            return false;
+                        }
+                    }
 
        }
 
-       return false;
-   }
+    }
+    qDebug()<<"Zaden ruch nie pomoze";
+    return true;
+}
 Singleplayer::Singleplayer(Player player1,Player player2){
        this->player1=player1;
        this->player2=player2;
@@ -97,17 +121,18 @@ void Multiplayer::opponentMove(){
 Multiplayer::Multiplayer(Player player1)
 {
     qDebug()<<"construktor invoked";
-    activePlayer=&player1;
+    this->player1=player1;
+    activePlayer=&(this->player1);
     qDebug()<<"constructor active player"<<activePlayer->getIsWhite();
     client = new MyClient();
     client->connectToServer();
     connect(client,&MyClient::opponentMove,this,&Multiplayer::receivedMove);
 
 }
-
 Computer::Computer(Player player1)
 {
-    activePlayer=&player1;
+    this->player1.setIsWhite(player1.getIsWhite());
+    activePlayer=&(this->player1);
     computer= new SimpleComputer();
     computer->setIsWhite(false);
 }
@@ -135,17 +160,20 @@ void Computer::swichTurn(){
 }
 void Computer::opponentMove(){
 }
-void GameMode::movePiece(Piece* piece,int X,int Y)
+bool GameMode::movePiece(Piece* piece,int X,int Y)
      {
            std::string primarySquare = piece->actualPosition;
            std::string secondarySquare ="00";
            currentChange[0]=primarySquare[0];
            currentChange[1]=primarySquare[1];
+
            std::cout<<"Primary square"<< primarySquare;
            secondarySquare[0]=getColumnFromPixels(X);
            secondarySquare[1]=getRowFromPixels(Y);
            currentChange[2]=getColumnFromPixels(X);
            currentChange[3]=getRowFromPixels(Y);
+           piece->actualPosition=secondarySquare;
+           if(!isMate(piece)){
            std::cout<<"Secondary square"<< secondarySquare;
            piece->setX(chessboard->board.at(secondarySquare)->getX());
            piece->setY(chessboard->board.at(secondarySquare)->getY());
@@ -155,6 +183,13 @@ void GameMode::movePiece(Piece* piece,int X,int Y)
            chessboard->board.at(secondarySquare)->piece = piece;
            chessboard->board.at(secondarySquare)->setOccupied(true);
            std::cout << "moved" << "\n";
+           return true;
+           }
+           else
+           {
+               piece->actualPosition=primarySquare;
+               return false;
+           }
 
 
 
@@ -167,24 +202,33 @@ bool GameMode::executeMove(Piece* piece, int X,int Y){
     std::cout<<desiredSquare<<"\n";
     std::cout<<piece->movePossible(desiredSquare)<<"\n";
     qDebug()<<"Move possible" <<piece->movePossible(desiredSquare);
-    //if ((piece->movePossible(desiredSquare)) && (!isMate(piece)))
-    piece->getPossibleMoves();
+
     if (piece->movePossible(desiredSquare))
     {
         qDebug()<<"ruch mozliwy";
         if (chessboard->board.at(desiredSquare)->isOccupied())
         {
             qDebug()<<"atakuje";
-            attackPiece(piece,X,Y);
-            piece->getPossibleMoves();
+            if(attackPiece(piece,X,Y))
+            {
+            piece->changeFirstMove();
             return true;
+            }
+            else{
+                return false;
+            }
         }
         else
         {
             qDebug()<<"przenosze";
-            movePiece(piece,X,Y);
-            piece->getPossibleMoves();
+            if(movePiece(piece,X,Y))
+            {
+            piece->changeFirstMove();
             return true;
+            }
+            else{
+                return false;
+            }
         }
     }
     else{
@@ -192,25 +236,33 @@ bool GameMode::executeMove(Piece* piece, int X,int Y){
     }
 
 }
-void GameMode::attackPiece(Piece* piece, int X,int Y)
+bool GameMode::attackPiece(Piece* piece, int X,int Y)
      {
             std::string primarySquare = piece->actualPosition;
             std::string secondarySquare ="00";
             secondarySquare[0]=getColumnFromPixels(X);
             secondarySquare[1]=getRowFromPixels(Y);
+            piece->actualPosition=secondarySquare;
+            chessboard->board.at(secondarySquare)->piece->actualPosition = "00";
+            if(!isMate(piece)){
          piece->setX(chessboard->board.at(secondarySquare)->getX());
          piece->setY(chessboard->board.at(secondarySquare)->getY());
-         piece->actualPosition=secondarySquare;
-//         chessboard->board.at(secondarySquare)->piece->actualPosition="00";
-//         window->deletePiece(chessboard.board.at(secondarySquare)->piece);
          this->pieceToRemove=chessboard->board.at(secondarySquare)->piece;
          std::cout << "removed item" << "\n";
-         chessboard->board.at(secondarySquare)->piece = nullptr;
          piece->allFigures.remove(chessboard->board.at(secondarySquare)->piece);
+         chessboard->board.at(secondarySquare)->piece = nullptr;
          chessboard->board.at(primarySquare)->piece=nullptr;
          chessboard->board.at(primarySquare)->setOccupied(false);
          chessboard->board.at(secondarySquare)->piece = piece;
          chessboard->board.at(secondarySquare)->setOccupied(true);
+         return true;
+            }else{
+                piece->actualPosition=primarySquare;
+                chessboard->board.at(secondarySquare)->piece->actualPosition = secondarySquare;
+
+                return false;
+            }
+
      }
 Piece* GameMode::isPieceToDelete()
 {
@@ -225,17 +277,51 @@ int GameMode::getSquareOnRowColumn(int row,int column){
      }
 Piece* GameMode::canPickPiece(int X,int Y)
 {
+
     std::string primarySquare="00";
     primarySquare[0]=getColumnFromPixels(X);
     primarySquare[1]=getRowFromPixels(Y);
     qDebug()<<"can pick " << activePlayer->getIsWhite();
     if (chessboard->board.at(primarySquare)->piece !=nullptr )
     {
-        if (/*!isMate(chessboard->board.at(primarySquare)->piece)*/ true){
+
         qDebug()<<"active player"<<activePlayer->getIsWhite();
-        if (this->activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) return chessboard->board.at(primarySquare)->piece;
-        else return nullptr;
-    }
+        if (this->activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) {
+            if(isMate(chessboard->board.at(primarySquare)->piece))
+            {
+                QMessageBox msgBox= QMessageBox();
+                msgBox.setText("Mate, are you playing or want to surrender?");
+                msgBox.addButton("Play", QMessageBox::AcceptRole);
+                msgBox.addButton("Surrender", QMessageBox::RejectRole);
+
+                int result = msgBox.exec();
+
+                switch (result) {
+                    case QMessageBox::AcceptRole:
+                        // User clicked "Play"
+                        qDebug() << "User clicked Play";
+                        return chessboard->board.at(primarySquare)->piece;
+                    case QMessageBox::RejectRole:
+                        // User clicked "Quit"
+                        qDebug() << "User clicked Quit";
+                        emit this->quitGame();
+                        break;
+                    default:
+
+                        qDebug() << "User closed the message box";
+
+                        break;
+                }
+            }else return chessboard->board.at(primarySquare)->piece;
+
+
+        }
+        else
+        {
+            qDebug()<<"to nie twoj pionek";
+            return nullptr;
+        }
+
     }
     else
     {
@@ -257,7 +343,7 @@ char GameMode::getColumnFromPixels(int Y)
 
 bool GameMode::gameStarted()
 {
-//    chooseFirst();
+    chooseFirst();
     return this->isGameStarted;
 }
 
@@ -268,3 +354,4 @@ void Multiplayer::receivedMove(std::string move)
     std::string to= move.substr(2,4);
     executeMove(chessboard->board.at(from)->piece,chessboard->board.at(to)->getX(),chessboard->board.at(to)->getY());
 }
+

@@ -11,6 +11,7 @@ private:
 public:
     Player();
     Player(std::string,bool);
+    void setIsWhite(bool isWhite);
 bool PlayerInDatabase();
 void saveResultInDb();
 bool getIsWhite();

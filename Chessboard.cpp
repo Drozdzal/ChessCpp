@@ -1,9 +1,7 @@
 #include "Chessboard.h"
-#include "Game.h"
 #include <iostream>
 #include "Square.h"
 
-extern Game * game;
 
 void Board::setPieceOnSquare(Piece* piece, std::string squarePosition){
     Square* square= board.at(squarePosition);

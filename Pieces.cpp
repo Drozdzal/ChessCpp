@@ -30,6 +30,17 @@ bool Piece::isSquareOccupied(std::string desiredSquare)
     }
     return false;
 }
+bool Piece::moveExist(std::string desiredMove){
+if((desiredMove[0]>='A') && (desiredMove[0]<='H'))
+{
+    if((desiredMove[1]>='1') && (desiredMove[1]<='8'))
+    {
+        return true;
+    }
+}
+return false;
+
+}
 
 
 bool Piece::isSquareOccupiedByAlly(std::string desiredSquare)
@@ -132,8 +143,7 @@ Queen::Queen(bool isWhite){
 
 void Pawn::getPossibleMoves()
 {
-//    this->allPossibleMoves.clear();
-
+    this->allPossibleMoves.clear();
     int goForward;
     char column,row;
     column = actualPosition[0];
@@ -149,7 +159,7 @@ void Pawn::getPossibleMoves()
 
                     possiblePosition[0]=column;
                     possiblePosition[1]=(char)((int)row-1*goForward);
-                    if (!isSquareOccupied(possiblePosition)) {
+                    if (!isSquareOccupied(possiblePosition) && moveExist(possiblePosition)) {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     possiblePosition[0]=column;
@@ -163,14 +173,14 @@ void Pawn::getPossibleMoves()
 
                     possiblePosition[0]=(char)((int)(column)-1);
                     possiblePosition[1]=(char)((int)row-1*goForward);
-                    if (isSquareOccupied(possiblePosition))
+                    if (isSquareOccupied(possiblePosition) && moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
 
                     possiblePosition[0]=(char)((int)(column)+1);
                     possiblePosition[1]=(char)((int)row-1*goForward);
-                    if (isSquareOccupied(possiblePosition))
+                    if (isSquareOccupied(possiblePosition) && moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
@@ -178,8 +188,7 @@ void Pawn::getPossibleMoves()
 // OGARNAC TE RUCHY
 void Knight::getPossibleMoves()
 {
-//    this->allPossibleMoves.clear();
-
+    this->allPossibleMoves.clear();
     int goForward;
     char column,row;
     column = actualPosition[0];
@@ -188,25 +197,25 @@ void Knight::getPossibleMoves()
                 goForward=i;
                 possiblePosition[0]=(char) ((int) (column) - 1*goForward);
                 possiblePosition[1]=(char) (row - 2 * goForward);
-                if (!isSquareOccupiedByAlly(possiblePosition))
+                if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                 {
                     allPossibleMoves.push_front(possiblePosition);
                 }
                 possiblePosition[0]=(char) ((int) (column) - 2*goForward);
                 possiblePosition[1]=(char) (row - 1 * goForward);
-                if (!isSquareOccupiedByAlly(possiblePosition))
+                if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                 {
                     allPossibleMoves.push_front(possiblePosition);
                 }
                 possiblePosition[0]=(char) ((int) (column) - 1*goForward);
                 possiblePosition[1]=(char) (row + 2 * goForward);
-                if (!isSquareOccupiedByAlly(possiblePosition))
+                if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                 {
                     allPossibleMoves.push_front(possiblePosition);
                 }
                 possiblePosition[0]=(char) ((int) (column) - 2*goForward);
                 possiblePosition[1]=(char) (row + 1 * goForward);
-                if (!isSquareOccupiedByAlly(possiblePosition))
+                if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                 {
                     allPossibleMoves.push_front(possiblePosition);
                 }
@@ -214,178 +223,6 @@ void Knight::getPossibleMoves()
             }
 }
 void Bishop::getPossibleMoves()
-{
-//    this->allPossibleMoves.clear();
-
-    char column,row;
-    column = actualPosition[0];
-    row = actualPosition[1];
-    for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)-1*i);
-                possiblePosition[1]=(char)(row-1*i);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)+1*i);
-                possiblePosition[1]=(char)(row-1*i);
-
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-
-            }
-
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)-1*i);
-                possiblePosition[1]=(char)(row+1*i);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)+1*i);
-                possiblePosition[1]=(char)(row+1*i);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-}
-void Rook::getPossibleMoves()
-{
-//    this->allPossibleMoves.clear();
-
-    char column,row;
-    column = actualPosition[0];
-    row = actualPosition[1];
-    for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column));
-                possiblePosition[1]=(char)(row-1*i);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)-1*i);
-                possiblePosition[1]=(char)(row);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)+1*i);
-                possiblePosition[1]=(char)(row);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-
-
-            for(int i=1; i<=7;i++)
-            {
-
-                possiblePosition[0]=(char)((int)(column));
-                possiblePosition[1]=(char)(row+1*i);
-                if (isSquareOccupied(possiblePosition))
-                {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
-                    {
-                        allPossibleMoves.push_front(possiblePosition);
-                    }
-                    break;
-                }
-                allPossibleMoves.push_front(possiblePosition);
-            }
-}
-void King::getPossibleMoves()
-{
-//    this->allPossibleMoves.clear();
-    char column,row;
-    column = actualPosition[0];
-    row = actualPosition[1];
-    for(int i=-1; i<=1;i++)
-        for(int j=-1; j<=1;j++)
-            {
-
-                possiblePosition[0]=(char)((int)(column)-1*i);
-                possiblePosition[1]=(char)(row-1*j);
-                for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++)
-                {
-                   if(((*it)->getIsWhite()!=this->getIsWhite()) && ((*it)->movePossible(this->actualPosition)))
-                   {
-                       allPossibleMoves.push_front(possiblePosition);
-                   }
-                }
-                allPossibleMoves.push_front(possiblePosition);//TO DELL
-
-            }
-
-}
-void Queen::getPossibleMoves()
 {
     this->allPossibleMoves.clear();
     char column,row;
@@ -396,7 +233,7 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                if (isSquareOccupied(possiblePosition))
+                if (isSquareOccupied(possiblePosition)&& moveExist(possiblePosition))
                 {
                     if (!isSquareOccupiedByAlly(possiblePosition))
                     {
@@ -404,7 +241,9 @@ void Queen::getPossibleMoves()
                     }
                     break;
                 }
+                if(moveExist(possiblePosition)){
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
 
             for(int i=1; i<=7;i++)
@@ -412,7 +251,8 @@ void Queen::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)+1*i);
                 possiblePosition[1]=(char)(row-1*i);
-                if (isSquareOccupied(possiblePosition))
+
+                if (isSquareOccupied(possiblePosition)&& moveExist(possiblePosition))
                 {
                     if (!isSquareOccupiedByAlly(possiblePosition))
                     {
@@ -420,7 +260,11 @@ void Queen::getPossibleMoves()
                     }
                     break;
                 }
+                if(moveExist(possiblePosition))
+                {
                 allPossibleMoves.push_front(possiblePosition);
+                }
+
             }
 
 
@@ -431,13 +275,16 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row+1*i);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition))
+                {
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
 
 
@@ -448,14 +295,132 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row+1*i);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition))
+                {
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
+}
+void Rook::getPossibleMoves()
+{
+    this->allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row-1*i);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                    break;
+                }
+                if(moveExist(possiblePosition))
+                {
+                allPossibleMoves.push_front(possiblePosition);
+                }
+            }
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                    break;
+                }
+                if(moveExist(possiblePosition))
+                {
+                allPossibleMoves.push_front(possiblePosition);
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)+1*i);
+                possiblePosition[1]=(char)(row);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                    break;
+                }
+                if(moveExist(possiblePosition)){
+                allPossibleMoves.push_front(possiblePosition);
+                }
+            }
+
+
+            for(int i=1; i<=7;i++)
+            {
+
+                possiblePosition[0]=(char)((int)(column));
+                possiblePosition[1]=(char)(row+1*i);
+                if (isSquareOccupied(possiblePosition))
+                {
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                    {
+                        allPossibleMoves.push_front(possiblePosition);
+                    }
+                    break;
+                }
+                if(moveExist(possiblePosition)){
+                allPossibleMoves.push_front(possiblePosition);
+                }
+            }
+}
+void King::getPossibleMoves()
+{
+    this->allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
+    for(int i=-1; i<=1;i++)
+        for(int j=-1; j<=1;j++)
+            {
+
+                possiblePosition[0]=(char)((int)(column)-1*i);
+                possiblePosition[1]=(char)(row-1*j);
+//                for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++)
+//                {
+//                   if(((*it)->getIsWhite()!=this->getIsWhite()) && ((*it)->movePossible(this->actualPosition)))
+//                   {
+//                       allPossibleMoves.push_front(possiblePosition);
+//                   }
+//                }
+                if( moveExist(possiblePosition)){
+                allPossibleMoves.push_front(possiblePosition);//TO DELL
+                }
+
+            }
+
+}
+void Queen::getPossibleMoves()
+{
+    this->allPossibleMoves.clear();
+    char column,row;
+    column = actualPosition[0];
+    row = actualPosition[1];
 
     for(int i=1; i<=7;i++)
             {
@@ -464,13 +429,16 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row-1*i);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition))
+                {
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
 
             for(int i=1; i<=7;i++)
@@ -480,13 +448,16 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition))
+                {
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
 
 
@@ -497,13 +468,15 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition)){
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
 
 
@@ -514,13 +487,94 @@ void Queen::getPossibleMoves()
                 possiblePosition[1]=(char)(row+1*i);
                 if (isSquareOccupied(possiblePosition))
                 {
-                    if (!isSquareOccupiedByAlly(possiblePosition))
+                    if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
                     {
                         allPossibleMoves.push_front(possiblePosition);
                     }
                     break;
                 }
+                if(moveExist(possiblePosition)){
                 allPossibleMoves.push_front(possiblePosition);
+                }
             }
+
+            for(int i=1; i<=7;i++)
+                    {
+
+                        possiblePosition[0]=(char)((int)(column)-1*i);
+                        possiblePosition[1]=(char)(row-1*i);
+                        if (isSquareOccupied(possiblePosition)&& moveExist(possiblePosition))
+                        {
+                            if (!isSquareOccupiedByAlly(possiblePosition))
+                            {
+                                allPossibleMoves.push_front(possiblePosition);
+                            }
+                            break;
+                        }
+                        if(moveExist(possiblePosition)){
+                        allPossibleMoves.push_front(possiblePosition);
+                        }
+                    }
+
+                    for(int i=1; i<=7;i++)
+                    {
+
+                        possiblePosition[0]=(char)((int)(column)+1*i);
+                        possiblePosition[1]=(char)(row-1*i);
+
+                        if (isSquareOccupied(possiblePosition)&& moveExist(possiblePosition))
+                        {
+                            if (!isSquareOccupiedByAlly(possiblePosition))
+                            {
+                                allPossibleMoves.push_front(possiblePosition);
+                            }
+                            break;
+                        }
+                        if(moveExist(possiblePosition))
+                        {
+                        allPossibleMoves.push_front(possiblePosition);
+                        }
+
+                    }
+
+
+                    for(int i=1; i<=7;i++)
+                    {
+
+                        possiblePosition[0]=(char)((int)(column)-1*i);
+                        possiblePosition[1]=(char)(row+1*i);
+                        if (isSquareOccupied(possiblePosition))
+                        {
+                            if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                            {
+                                allPossibleMoves.push_front(possiblePosition);
+                            }
+                            break;
+                        }
+                        if(moveExist(possiblePosition))
+                        {
+                        allPossibleMoves.push_front(possiblePosition);
+                        }
+                    }
+
+
+                    for(int i=1; i<=7;i++)
+                    {
+
+                        possiblePosition[0]=(char)((int)(column)+1*i);
+                        possiblePosition[1]=(char)(row+1*i);
+                        if (isSquareOccupied(possiblePosition))
+                        {
+                            if (!isSquareOccupiedByAlly(possiblePosition)&& moveExist(possiblePosition))
+                            {
+                                allPossibleMoves.push_front(possiblePosition);
+                            }
+                            break;
+                        }
+                        if(moveExist(possiblePosition))
+                        {
+                        allPossibleMoves.push_front(possiblePosition);
+                        }
+                    }
 }
 

@@ -28,6 +28,7 @@ public:
    virtual void swichTurn()=0;
    virtual void opponentMove()=0;
    bool isMate(Piece* piece);
+   bool isFinished(Piece* piece);
    void pieceDeleted();
    Piece* isPieceToDelete();
 
@@ -36,14 +37,15 @@ public:
    bool piecesOnPath(Square *choosenSquare);
    void setPickedPiece();
    void changeTurn();
-   void movePiece(Piece* piece,int X,int Y);
-   void attackPiece(Piece* piece,int X,int Y);
+   bool movePiece(Piece* piece,int X,int Y);
+   bool attackPiece(Piece* piece,int X,int Y);
 
    Piece* canPickPiece(int X,int Y);
    char getColumnFromPixels(int X);
    char getRowFromPixels(int Y);
    int getSquareOnRowColumn(int row,int column);
-
+signals:
+   void quitGame();
 
 
 };

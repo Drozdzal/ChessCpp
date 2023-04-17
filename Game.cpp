@@ -5,6 +5,7 @@
 #include "Pieces.h"
 #include <iostream>
 #include <math.h>
+#include <QtCore/QException>
 
 Game::Game(QWidget *parent){
     // set up the screen
@@ -17,6 +18,7 @@ Game::Game(QWidget *parent){
     whiteTurn = true;
     this->chessboard = new Board();
     this->saver=Saver();
+    this->loader=Loader();
     this->window = new Window();
     connect(window,&Window::multiplayer,this,&Game::multiplayer);
     connect(window,&Window::createServer,this,&Game::createServer);
@@ -26,6 +28,8 @@ Game::Game(QWidget *parent){
     connect(window,&Window::computer,this,&Game::computer);
     connect(window,&Window::settings,this,&Game::settings);
     connect(window, &Window::close, this, &Game::close);
+    connect(window,&Window::nextMove,this,&Game::nextMove);
+    connect(window,&Window::previousMove,this,&Game::previousMove);
     setScene(window->scene);
     window->displayMenu();
 }
@@ -40,7 +44,7 @@ void Game::multiplayer()
 }
 
 void Game::createServer(){
-    Player playerServer=Player("Michal",false);
+    Player playerServer=Player("Michal",true);
 //    Player player2=Player("Ewa",false);
     server=new MyServer();
     server->startServer();
@@ -51,6 +55,7 @@ void Game::createServer(){
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode = new Multiplayer(playerServer);
+    connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;
     gameMode->gameStarted();
@@ -66,6 +71,7 @@ void Game::joinServer()
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode = new Multiplayer(player1);
+    connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;
     gameMode->gameStarted();
@@ -81,6 +87,7 @@ void Game::singleplayer()
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode = new Singleplayer(player1,player2);
+    connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     qDebug()<<"przed";
     inPlayingMode=true;
@@ -91,8 +98,34 @@ void Game::singleplayer()
 }
 void Game::loading()
 {
-    this->client= new MyClient();
-    client->connectToServer();
+    window->clearScene();
+//    connect(window,&Window::nextMove,this,&Game::nextMove);
+//    connect(window,&Window::previousMove,this,&Game::previousMove);
+
+    QString choosenFile=window->loadingWindow();
+    loader.readJson(choosenFile);
+    chessboard->createBoard();
+    loader.firstMoveFromJson(this->chessboard);
+    window->displayChessboard(chessboard->board);
+    window->displayPieces(Piece::allFigures);
+}
+void Game::nextMove()
+{
+
+    qDebug()<<"Nacisnieto nexta";
+    window->deletePieces(Piece::allFigures);
+    loader.moveForward(this->chessboard);
+    window->displayPieces(Piece::allFigures);
+
+
+}
+void Game::previousMove()
+{
+    qDebug()<<"Nacisnieto previous";
+    window->deletePieces(Piece::allFigures);
+    loader.moveBackward(this->chessboard);
+    window->displayPieces(Piece::allFigures);
+
 }
 void Game::settings()
 {
@@ -108,8 +141,8 @@ void Game::computer()
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode=new Computer(player1);
+    connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
-    gameMode->gameStarted();
     inPlayingMode=true;
 
 }
@@ -119,6 +152,11 @@ void Game::close()
     qDebug() << "Quit";
 }
 
+void Game::quitGame()
+{
+    qDebug()<<"Received quti signal";
+    this->close();
+}
 
 
 void Game::backToPrimaryPosition()
@@ -139,10 +177,14 @@ void Game::mousePressEvent(QMouseEvent *event){
     if ((pieceToMove==nullptr) && inPlayingMode){
         qDebug()<<"Proboje podniesc";
         pieceToMove=gameMode->canPickPiece(event->x(),event->y());
+//        gameMode->isMate(pieceToMove);
+//        gameMode->isFinished(pieceToMove);
+
+
     }
     else if ((pieceToMove!=nullptr)&& inPlayingMode)
     {
-
+        qDebug()<<"executingMove";
         if (gameMode->executeMove(pieceToMove,event->x(),event->y()))
         {
 
@@ -151,10 +193,11 @@ void Game::mousePressEvent(QMouseEvent *event){
                 window->deletePiece(gameMode->isPieceToDelete());
                 gameMode->pieceDeleted();
             }
-            gameMode->swichTurn();
-            pieceToMove=nullptr;
             saver.piecesToJson();
             saver.save();
+            gameMode->swichTurn();
+            pieceToMove=nullptr;
+
         }
         else
         {
