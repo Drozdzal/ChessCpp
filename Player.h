@@ -7,7 +7,7 @@ class Player
 private:
     std::string name;
     bool isWhite;
-    Timer timer;
+//    Timer timer;
 public:
     Player();
     Player(std::string,bool);

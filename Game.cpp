@@ -6,6 +6,10 @@
 #include <iostream>
 #include <math.h>
 #include <QtCore/QException>
+#include <QTimer>
+#include <QLabel>
+#include <QGraphicsProxyWidget>
+#include "Timer.h"
 
 Game::Game(QWidget *parent){
     // set up the screen
@@ -31,6 +35,36 @@ Game::Game(QWidget *parent){
     connect(window,&Window::nextMove,this,&Game::nextMove);
     connect(window,&Window::previousMove,this,&Game::previousMove);
     setScene(window->scene);
+
+
+
+
+//       QLabel* label= new QLabel();
+//       label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+//       label->setFixedSize(150, 50);
+//           QGraphicsProxyWidget* proxy = window->scene->addWidget(label);
+////           proxy->setPos(, 100);
+
+//       QTimer timer;
+//       timer.setInterval(1000);
+//       int remaining_time = 10 * 60;
+//       label->setText(QString("%1:%2").arg(remaining_time / 60, 2, 10, QLatin1Char('0')).arg(remaining_time % 60, 2, 10, QLatin1Char('0')));
+//       QObject::connect(&timer, &QTimer::timeout, [&](){
+//           remaining_time--;
+//           if (remaining_time < 0) {
+//               remaining_time = 0;
+//               timer.stop();
+//           }
+//           label->setText(QString("%1:%2").arg(remaining_time / 60, 2, 10, QLatin1Char('0')).arg(remaining_time % 60, 2, 10, QLatin1Char('0')));
+//       });
+////       window->scene->addWidget(label);
+//       timer.start();
+
+
+
+
+
+
     window->displayMenu();
 }
 
@@ -90,6 +124,10 @@ void Game::singleplayer()
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     qDebug()<<"przed";
+
+
+    TimerWidget* timer=new TimerWidget();
+    window->scene->addItem(timer);
     inPlayingMode=true;
     gameMode->gameStarted();
     qDebug()<<"po";

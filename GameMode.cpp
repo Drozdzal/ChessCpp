@@ -8,6 +8,8 @@ GameMode::GameMode(Player player1,Player player2){
 }
 GameMode::GameMode()
 {
+ qDebug()<<"GameMode";
+
 
 }
 void GameMode::setChessboard(Board *chessboard)
