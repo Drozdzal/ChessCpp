@@ -7,7 +7,8 @@
 #include <QWidget>
 #include "Pieces.h"
 #include <QtCore/QException>
-
+#include <QGraphicsWidget>
+#include <QButtonGroup>
 
 class Window : public QObject
 {
@@ -25,6 +26,7 @@ public:
     void displayMultiplayer();
     void displayCreateServer();
     void displayJoinServer();
+    void displaySettings();
     QString loadingWindow();
     QGraphicsScene *scene;
 
@@ -37,9 +39,21 @@ signals:
     void nextMove();
     void previousMove();
     void settings();
+    void baseTimeChanged();
+    void addingTimeChanged();
     void computer();
     void close();
     void playersRating();
 };
 
+class ChoosingPanel : public QGraphicsWidget
+{
+public:
+    ChoosingPanel(QGraphicsItem* parent = nullptr);
+
+    int getSelectedDuration() const;
+
+private:
+    QButtonGroup* durationGroup;
+};
 #endif // WINDOW_H

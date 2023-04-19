@@ -31,40 +31,12 @@ Game::Game(QWidget *parent){
     connect(window,&Window::loading,this,&Game::loading);
     connect(window,&Window::computer,this,&Game::computer);
     connect(window,&Window::settings,this,&Game::settings);
+    connect(window,&Window::addingTimeChanged,this,&Game::addingTimeChanged);
+    connect(window,&Window::baseTimeChanged,this,&Game::baseTimeChanged);
     connect(window, &Window::close, this, &Game::close);
     connect(window,&Window::nextMove,this,&Game::nextMove);
     connect(window,&Window::previousMove,this,&Game::previousMove);
     setScene(window->scene);
-
-
-
-
-//       QLabel* label= new QLabel();
-//       label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-//       label->setFixedSize(150, 50);
-//           QGraphicsProxyWidget* proxy = window->scene->addWidget(label);
-////           proxy->setPos(, 100);
-
-//       QTimer timer;
-//       timer.setInterval(1000);
-//       int remaining_time = 10 * 60;
-//       label->setText(QString("%1:%2").arg(remaining_time / 60, 2, 10, QLatin1Char('0')).arg(remaining_time % 60, 2, 10, QLatin1Char('0')));
-//       QObject::connect(&timer, &QTimer::timeout, [&](){
-//           remaining_time--;
-//           if (remaining_time < 0) {
-//               remaining_time = 0;
-//               timer.stop();
-//           }
-//           label->setText(QString("%1:%2").arg(remaining_time / 60, 2, 10, QLatin1Char('0')).arg(remaining_time % 60, 2, 10, QLatin1Char('0')));
-//       });
-////       window->scene->addWidget(label);
-//       timer.start();
-
-
-
-
-
-
     window->displayMenu();
 }
 
@@ -126,10 +98,15 @@ void Game::singleplayer()
     qDebug()<<"przed";
 
 
-    TimerWidget* timer=new TimerWidget();
-    window->scene->addItem(timer);
+//    TimerWidget* timer=new TimerWidget();
+//    window->scene->addItem(timer);
     inPlayingMode=true;
     gameMode->gameStarted();
+    window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
+    gameMode->getPlayer1().getTimerWidget()->getTimer()->stop();
+    gameMode->getPlayer1().getTimerWidget()->setPos(750,600);
+    gameMode->getPlayer2().getTimerWidget()->getTimer()->stop();
+    window->scene->addItem(gameMode->getPlayer2().getTimerWidget());
     qDebug()<<"po";
 
 
@@ -168,6 +145,7 @@ void Game::previousMove()
 void Game::settings()
 {
     qDebug() << "Settings";
+    window->displaySettings();
 //    client->sendMessage();
 }
 void Game::computer()
@@ -215,8 +193,7 @@ void Game::mousePressEvent(QMouseEvent *event){
     if ((pieceToMove==nullptr) && inPlayingMode){
         qDebug()<<"Proboje podniesc";
         pieceToMove=gameMode->canPickPiece(event->x(),event->y());
-//        gameMode->isMate(pieceToMove);
-//        gameMode->isFinished(pieceToMove);
+
 
 
     }
@@ -247,3 +224,10 @@ void Game::mousePressEvent(QMouseEvent *event){
     QGraphicsView::mousePressEvent(event);
 }
 
+void Game::baseTimeChanged(){
+    qDebug()<<"really changed";
+}
+
+void Game::addingTimeChanged(){
+    qDebug()<<"adding really changed";
+}

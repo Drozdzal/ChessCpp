@@ -1,10 +1,21 @@
 #include "Window.h"
 #include "QFileDialog"
 #include "QPushButton"
+#include "QWidget"
+#include <QGraphicsLinearLayout>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QGraphicsProxyWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+
 Window::Window(QObject* parent): QObject(parent){
     scene=new QGraphicsScene();
     scene->setSceneRect(0,0,1200,900);
 }
+
+
+
 
 void Window::displayMenu()
 {
@@ -176,3 +187,56 @@ void Window::clearScene()
     scene->clear();
 
 }
+
+void Window::displaySettings()
+{
+    scene->clear();
+
+    QWidget* widget = new QWidget();
+    QLabel* label = new QLabel("Starting Time:", widget);
+    QVBoxLayout* mainLayout = new QVBoxLayout(widget);
+    // Create a QButtonGroup and add some buttons to it
+    QButtonGroup* startingTime = new QButtonGroup(widget);
+    QPushButton* lowTime = new QPushButton("30 mins", widget);
+    QPushButton* mediumTime = new QPushButton("10 mins", widget);
+    QPushButton* highTime = new QPushButton("5 mins", widget);
+    startingTime->addButton(lowTime);
+    startingTime->addButton(mediumTime);
+    startingTime->addButton(highTime);
+
+    QHBoxLayout* layout = new QHBoxLayout(widget);
+    layout->addWidget(lowTime);
+    layout->addWidget(mediumTime);
+    layout->addWidget(highTime);
+    mainLayout->addLayout(layout);
+    // Create a QGraphicsProxyWidget to hold the widget and add it to the scene
+
+    connect(startingTime, &QButtonGroup::buttonClicked, this, &Window::baseTimeChanged);
+    QButtonGroup* addingTime = new QButtonGroup(widget);
+    QPushButton* lowAdding = new QPushButton("30 sec", widget);
+    QPushButton* mediumAdding = new QPushButton("20 sec", widget);
+    QPushButton* highAdding = new QPushButton("10 sec", widget);
+    addingTime->addButton(lowAdding);
+    addingTime->addButton(mediumAdding);
+    addingTime->addButton(highAdding);
+    connect(addingTime, &QButtonGroup::buttonClicked, this, &Window::addingTimeChanged);
+    // Create a QButtonGroup and add some buttons to it
+    QHBoxLayout* layout2 = new QHBoxLayout();
+    layout2->addWidget(lowAdding);
+    layout2->addWidget(mediumAdding);
+    layout2->addWidget(highAdding);
+
+
+
+    // Create a QGraphicsProxyWidget to hold the widget and add it to the scene
+
+    mainLayout->addSpacing(100);
+    mainLayout->addLayout(layout2);
+    widget->setLayout(mainLayout);
+    QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget();
+    proxyWidget->setWidget(widget);
+    scene->addItem(proxyWidget);
+
+
+}
+

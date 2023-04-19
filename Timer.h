@@ -9,6 +9,7 @@
 #include <QFont>
 #include <QPen>
 #include <QBrush>
+#include <QString>
 
 class Timer
 {
@@ -24,7 +25,9 @@ private:
 
 class TimerWidget : public QGraphicsTextItem {
 public:
-    TimerWidget(QGraphicsItem* parent = nullptr);
+    TimerWidget(QString name,QGraphicsItem* parent = nullptr);
+
+    QTimer *getTimer() const;
 
 public slots:
     void updateTime();
@@ -34,6 +37,7 @@ private:
     int timeRemaining;
     QGraphicsRectItem* frame;
     QGraphicsSimpleTextItem* label;
+    QTimer* timer;
 };
 
 

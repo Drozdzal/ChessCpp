@@ -47,6 +47,9 @@ public slots:
     void nextMove();
     void previousMove();
     void settings();
+    void baseTimeChanged();
+    void addingTimeChanged();
+
     void computer();
     void close();
     void quitGame();

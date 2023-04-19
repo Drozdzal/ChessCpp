@@ -12,6 +12,16 @@ GameMode::GameMode()
 
 
 }
+
+Player GameMode::getPlayer2() const
+{
+    return player2;
+}
+
+Player GameMode::getPlayer1() const
+{
+    return player1;
+}
 void GameMode::setChessboard(Board *chessboard)
 {
     this->chessboard=chessboard;
@@ -47,11 +57,12 @@ bool GameMode::isMate(Piece* piece){
               qDebug()<<"King found";
           }
        }
+       // for testing
 
+       //for testing
        for(auto it=Piece::allFigures.begin();it!=piece->Piece::allFigures.end();it++)
        {
           if ((*it)!=nullptr){
-// COS TA PETLA PSUJE
               (*it)->getPossibleMoves();
           if(((*it)->getIsWhite()!=king->getIsWhite()) && ((*it)->movePossible(king->actualPosition)))
           {
@@ -75,21 +86,29 @@ bool GameMode::isFinished(Piece *piece)
        if ((*it)->getIsWhite()==piece->getIsWhite()){
            qDebug()<<"Checking next piece";
            (*it)->getPossibleMoves();
-                   for (const std::string& move :(*it)->allPossibleMoves) {
+                  for (const std::string& move :(*it)->allPossibleMoves) {
                        qDebug()<<"Checking next move";
 
                         previousPose=(*it)->actualPosition;
+                        qDebug()<<"wodking";
                         (*it)->actualPosition=move;
+
+                        // TUTAJ CRASH
                         if(!isMate(*it))
                         {
+                            (*it)->actualPosition=previousPose;
                             qDebug()<<"krola uratuje sie";
                             return false;
                         }
+
+                        //TUTAJ CRASH
                     }
+                  (*it)->actualPosition=previousPose;
 
        }
 
     }
+    return false;
     qDebug()<<"Zaden ruch nie pomoze";
     return true;
 }
@@ -100,6 +119,9 @@ Singleplayer::Singleplayer(Player player1,Player player2){
    }
 void Singleplayer::swichTurn(){
     qDebug()<<"Singleplayer switch turn";
+    activePlayer->getTimerWidget()->addTime(20);
+
+    activePlayer->getTimerWidget()->getTimer()->stop();
     if (activePlayer==&player1)
     {
         qDebug()<<"pl1changing to 2";
@@ -110,6 +132,8 @@ void Singleplayer::swichTurn(){
         activePlayer=&player1;
         qDebug()<<"pl2changing to 1";
     }
+    activePlayer->getTimerWidget()->getTimer()->start();
+
 }
 void Singleplayer::opponentMove(){
 }
@@ -291,6 +315,7 @@ Piece* GameMode::canPickPiece(int X,int Y)
         if (this->activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) {
             if(isMate(chessboard->board.at(primarySquare)->piece))
             {
+                if(!isFinished(chessboard->board.at(primarySquare)->piece)) {for(int i=0;i<=10;i++){qDebug() <<"No mvoes poossible";}}
                 QMessageBox msgBox= QMessageBox();
                 msgBox.setText("Mate, are you playing or want to surrender?");
                 msgBox.addButton("Play", QMessageBox::AcceptRole);

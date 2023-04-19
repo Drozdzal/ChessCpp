@@ -44,6 +44,10 @@ public:
    char getColumnFromPixels(int X);
    char getRowFromPixels(int Y);
    int getSquareOnRowColumn(int row,int column);
+   Player getPlayer1() const;
+
+   Player getPlayer2() const;
+
 signals:
    void quitGame();
 
