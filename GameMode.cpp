@@ -119,7 +119,7 @@ Singleplayer::Singleplayer(Player player1,Player player2){
    }
 void Singleplayer::swichTurn(){
     qDebug()<<"Singleplayer switch turn";
-    activePlayer->getTimerWidget()->addTime(20);
+    activePlayer->getTimerWidget()->addTime();
 
     activePlayer->getTimerWidget()->getTimer()->stop();
     if (activePlayer==&player1)

@@ -9,6 +9,21 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+QButtonGroup *Window::getAddingTime() const
+{
+    return addingTime;
+}
+
+void Window::setStartingTime(QButtonGroup *newStartingTime)
+{
+    startingTime = newStartingTime;
+}
+
+QButtonGroup *Window::getStartingTime() const
+{
+    return startingTime;
+}
+
 Window::Window(QObject* parent): QObject(parent){
     scene=new QGraphicsScene();
     scene->setSceneRect(0,0,1200,900);
@@ -19,6 +34,7 @@ Window::Window(QObject* parent): QObject(parent){
 
 void Window::displayMenu()
 {
+    scene->clear();
     QGraphicsTextItem* titleText = new QGraphicsTextItem(QString("Chess Game - MZ"));
     QFont titleFont("arial",80);
     titleText->setFont(titleFont);
@@ -196,7 +212,7 @@ void Window::displaySettings()
     QLabel* label = new QLabel("Starting Time:", widget);
     QVBoxLayout* mainLayout = new QVBoxLayout(widget);
     // Create a QButtonGroup and add some buttons to it
-    QButtonGroup* startingTime = new QButtonGroup(widget);
+    startingTime = new QButtonGroup(widget);
     QPushButton* lowTime = new QPushButton("30 mins", widget);
     QPushButton* mediumTime = new QPushButton("10 mins", widget);
     QPushButton* highTime = new QPushButton("5 mins", widget);
@@ -212,7 +228,7 @@ void Window::displaySettings()
     // Create a QGraphicsProxyWidget to hold the widget and add it to the scene
 
     connect(startingTime, &QButtonGroup::buttonClicked, this, &Window::baseTimeChanged);
-    QButtonGroup* addingTime = new QButtonGroup(widget);
+    addingTime = new QButtonGroup(widget);
     QPushButton* lowAdding = new QPushButton("30 sec", widget);
     QPushButton* mediumAdding = new QPushButton("20 sec", widget);
     QPushButton* highAdding = new QPushButton("10 sec", widget);
@@ -235,6 +251,14 @@ void Window::displaySettings()
     widget->setLayout(mainLayout);
     QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget();
     proxyWidget->setWidget(widget);
+
+
+    Button* mainMenu = new Button(QString("Back to Main Menu"));
+    int xPos = 600 - mainMenu->boundingRect().width()/2;
+    int yPos = 275;
+    mainMenu->setPos(xPos,yPos);
+    connect(mainMenu,&Button::clicked,this,&Window::showMainMenu);
+    scene->addItem(mainMenu);
     scene->addItem(proxyWidget);
 
 

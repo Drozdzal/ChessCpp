@@ -13,17 +13,12 @@
 
 
     TimerWidget::TimerWidget(QString name=QString("Unknowed"),QGraphicsItem* parent)
-        : QGraphicsTextItem(parent), timeRemaining(600)
+        : QGraphicsTextItem(parent)
     {
 
 
-//        setPlainText("10:00");
-//        setPos(800, 800);
-//        QTimer* timer = new QTimer(this);
-//        connect(timer, &QTimer::timeout, this, &TimerWidget::updateTime);
-//        timer->start(1000);
 
-        setPlainText("10:00");
+        setPlainText("--:--");
 
           // set position to (800, 800)
           setPos(750, 100);
@@ -59,9 +54,16 @@
                                       .arg(seconds, 2, 10, QChar('0')));
     }
 
-    void TimerWidget::addTime(int seconds)
+    void TimerWidget::addTime()
     {
-        timeRemaining += seconds;
+        timeRemaining += timeAdding;
+    }
+
+    void TimerWidget::setTimeRules(int newTimeRemaining,int addingTime)
+    {
+        this->timeRemaining = newTimeRemaining*60;
+        this->timeAdding=addingTime;
+
     }
 
     QTimer *TimerWidget::getTimer() const

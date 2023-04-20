@@ -13,6 +13,9 @@
 class Window : public QObject
 {
     Q_OBJECT
+private:
+    QButtonGroup* addingTime;
+    QButtonGroup* startingTime;
 public:
     Window(QObject* parent = 0);
     void displayMenu();
@@ -30,6 +33,12 @@ public:
     QString loadingWindow();
     QGraphicsScene *scene;
 
+    QButtonGroup *getAddingTime() const;
+
+    void setStartingTime(QButtonGroup *newStartingTime);
+
+    QButtonGroup *getStartingTime() const;
+
 signals:
     void multiplayer();
     void createServer();
@@ -39,11 +48,12 @@ signals:
     void nextMove();
     void previousMove();
     void settings();
-    void baseTimeChanged();
-    void addingTimeChanged();
+    void baseTimeChanged(QAbstractButton *button);
+    void addingTimeChanged(QAbstractButton *button);
     void computer();
     void close();
     void playersRating();
+    void showMainMenu();
 };
 
 class ChoosingPanel : public QGraphicsWidget
@@ -55,5 +65,6 @@ public:
 
 private:
     QButtonGroup* durationGroup;
+
 };
 #endif // WINDOW_H

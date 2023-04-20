@@ -36,6 +36,7 @@ Game::Game(QWidget *parent){
     connect(window, &Window::close, this, &Game::close);
     connect(window,&Window::nextMove,this,&Game::nextMove);
     connect(window,&Window::previousMove,this,&Game::previousMove);
+    connect(window,&Window::showMainMenu,this,&Game::showMainMenu);
     setScene(window->scene);
     window->displayMenu();
 }
@@ -87,19 +88,20 @@ void Game::singleplayer()
 {
     Player player1=Player("Michal",true);
     Player player2=Player("Ewa",false);
+    player1.getTimerWidget()->setTimeRules(timeRemaining,timeAdding);
+    player2.getTimerWidget()->setTimeRules(timeRemaining,timeAdding);
+
     chessboard->createBoard();
     chessboard->createPieces();
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode = new Singleplayer(player1,player2);
+
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     qDebug()<<"przed";
 
-
-//    TimerWidget* timer=new TimerWidget();
-//    window->scene->addItem(timer);
     inPlayingMode=true;
     gameMode->gameStarted();
     window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
@@ -224,10 +226,22 @@ void Game::mousePressEvent(QMouseEvent *event){
     QGraphicsView::mousePressEvent(event);
 }
 
-void Game::baseTimeChanged(){
-    qDebug()<<"really changed";
+void Game::baseTimeChanged(QAbstractButton *button){
+    std::string buttonText=button->text().toStdString();
+    int timeChanged = stoi(buttonText.substr(0,2));
+    qDebug()<<"Base time changed to";
+    qDebug()<<timeChanged;
+    this->timeRemaining=timeChanged;
 }
 
-void Game::addingTimeChanged(){
-    qDebug()<<"adding really changed";
+void Game::addingTimeChanged(QAbstractButton *button){
+    std::string buttonText=button->text().toStdString();
+    int timeChanged = stoi(buttonText.substr(0,2));
+    qDebug()<<"Adding time changed to";
+    qDebug()<<timeChanged;
+    this->timeAdding=timeChanged;
+}
+
+void Game::showMainMenu(){
+    window->displayMenu();
 }

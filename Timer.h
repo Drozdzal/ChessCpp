@@ -29,12 +29,15 @@ public:
 
     QTimer *getTimer() const;
 
+    void setTimeRules(int fullTime,int addingTime);
+
 public slots:
     void updateTime();
-    void addTime(int seconds);
+    void addTime();
 
 private:
-    int timeRemaining;
+    int timeRemaining=600;
+    int timeAdding=20;
     QGraphicsRectItem* frame;
     QGraphicsSimpleTextItem* label;
     QTimer* timer;

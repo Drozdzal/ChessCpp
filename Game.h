@@ -12,6 +12,7 @@
 #include "LanServer.h"
 #include "GameMode.h"
 #include "LanClient.h"
+#include <QAbstractButton>
 
 class Game: public QGraphicsView{
     Q_OBJECT
@@ -37,7 +38,8 @@ public:
     Loader loader;
     GameMode* gameMode; // TUTAJ PAMIETAC O MOZLIWYM PROBLEMIE w innych niz singleplayer;
     bool inPlayingMode=false;
-
+    int timeRemaining=600;
+    int timeAdding=20;
 public slots:
     void multiplayer();
     void createServer();
@@ -47,8 +49,9 @@ public slots:
     void nextMove();
     void previousMove();
     void settings();
-    void baseTimeChanged();
-    void addingTimeChanged();
+    void baseTimeChanged(QAbstractButton *button);
+    void addingTimeChanged(QAbstractButton *button);
+    void showMainMenu();
 
     void computer();
     void close();
