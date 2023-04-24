@@ -31,6 +31,8 @@ public:
    bool isFinished(Piece* piece);
    void pieceDeleted();
    Piece* isPieceToDelete();
+   void setMyTurn(bool newMyTurn);
+
 
 
    bool executeMove(Piece* piece, int X,int Y);
@@ -47,6 +49,9 @@ public:
    Player getPlayer1() const;
 
    Player getPlayer2() const;
+
+private:
+   bool myTurn;
 
 signals:
    void quitGame();
@@ -65,10 +70,13 @@ class Multiplayer : public GameMode{
     Q_OBJECT
 private:
     MyClient* client;
+    bool myTurn=false;
 public:
-    Multiplayer(Player player1);
+    Multiplayer(Player player1,Player player2);
     void swichTurn() override;
     void opponentMove() override;
+    void setMyTurn(bool newMyTurn);
+
 public slots:
     void receivedMove(std::string move);
 };

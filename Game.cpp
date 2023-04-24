@@ -52,7 +52,7 @@ void Game::multiplayer()
 
 void Game::createServer(){
     Player playerServer=Player("Michal",true);
-//    Player player2=Player("Ewa",false);
+    Player player2=Player("Ewa",false);
     server=new MyServer();
     server->startServer();
     qDebug()<<"Creating server";
@@ -61,23 +61,23 @@ void Game::createServer(){
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
-    gameMode = new Multiplayer(playerServer);
+    gameMode = new Multiplayer(playerServer,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;
     gameMode->gameStarted();
-
+    gameMode->setMyTurn(true);
 }
 void Game::joinServer()
 {
     Player player1=Player("Michal",false);
-//    Player player2=Player("Ewa",true);
+    Player player2=Player("Ewa",true);
     chessboard->createBoard();
     chessboard->createPieces();
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
-    gameMode = new Multiplayer(player1);
+    gameMode = new Multiplayer(player1,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;

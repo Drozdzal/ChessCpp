@@ -47,6 +47,8 @@ void GameMode::start(){
 void GameMode::end(){
 }
 bool GameMode::isMate(Piece* piece){
+    qDebug()<<" In mate";
+
        Piece* king=nullptr;
        //finding a king
        for(auto it=Piece::allFigures.begin();it!=piece->Piece::allFigures.end();it++)
@@ -62,6 +64,7 @@ bool GameMode::isMate(Piece* piece){
        //for testing
        for(auto it=Piece::allFigures.begin();it!=piece->Piece::allFigures.end();it++)
        {
+          if((*it)!=piece){
           if ((*it)!=nullptr){
               (*it)->getPossibleMoves();
           if(((*it)->getIsWhite()!=king->getIsWhite()) && ((*it)->movePossible(king->actualPosition)))
@@ -71,7 +74,7 @@ bool GameMode::isMate(Piece* piece){
           }
 
           }
-\
+          }
 
        }
        qDebug()<<"Krol safe";
@@ -85,30 +88,37 @@ bool GameMode::isFinished(Piece *piece)
     {
        if ((*it)->getIsWhite()==piece->getIsWhite()){
            qDebug()<<"Checking next piece";
-           (*it)->getPossibleMoves();
-                  for (const std::string& move :(*it)->allPossibleMoves) {
+                  (*it)->getPossibleMoves();
+                  for (auto move=(*it)->allPossibleMoves.begin();move!=(*it)->allPossibleMoves.end();move++) {
                        qDebug()<<"Checking next move";
 
                         previousPose=(*it)->actualPosition;
                         qDebug()<<"wodking";
-                        (*it)->actualPosition=move;
-
+                        (*it)->actualPosition=(*move);
+//TODO: is mate crashuje a dokladniej wbicie na nowy ruch
                         // TUTAJ CRASH
                         if(!isMate(*it))
                         {
+                            qDebug()<<"Can save from pose" << QString::fromStdString(previousPose);
                             (*it)->actualPosition=previousPose;
                             qDebug()<<"krola uratuje sie";
                             return false;
+                            break;
                         }
-
+                        qDebug()<<"Ten ruch nie obroni";
+//                        qDebug()<<QString::fromStdString(*move);
+                        qDebug()<<QString::fromStdString(previousPose);
                         //TUTAJ CRASH
+                        (*it)->actualPosition=previousPose;
+
+                        qDebug()<<"Pozycja piona przywrocona";
                     }
-                  (*it)->actualPosition=previousPose;
+
+                    qDebug()<<"Wszystkie ruchy sprawdzone";
 
        }
 
     }
-    return false;
     qDebug()<<"Zaden ruch nie pomoze";
     return true;
 }
@@ -140,11 +150,16 @@ void Singleplayer::opponentMove(){
 void Multiplayer::swichTurn(){
     client->sendMessage(this->currentChange);
     qDebug()<<"Multiplayer switch turn";
-
+    activePlayer=&player2;
 }
 void Multiplayer::opponentMove(){
 }
-Multiplayer::Multiplayer(Player player1)
+void Multiplayer::setMyTurn(bool newMyTurn)
+{
+    myTurn = newMyTurn;
+}
+
+Multiplayer::Multiplayer(Player player1,Player player2)
 {
     qDebug()<<"construktor invoked";
     this->player1=player1;
@@ -152,6 +167,7 @@ Multiplayer::Multiplayer(Player player1)
     qDebug()<<"constructor active player"<<activePlayer->getIsWhite();
     client = new MyClient();
     client->connectToServer();
+    player2=player2;
     connect(client,&MyClient::opponentMove,this,&Multiplayer::receivedMove);
 
 }
@@ -315,7 +331,32 @@ Piece* GameMode::canPickPiece(int X,int Y)
         if (this->activePlayer->getIsWhite()==chessboard->board.at(primarySquare)->piece->getIsWhite()) {
             if(isMate(chessboard->board.at(primarySquare)->piece))
             {
-                if(!isFinished(chessboard->board.at(primarySquare)->piece)) {for(int i=0;i<=10;i++){qDebug() <<"No mvoes poossible";}}
+                if(isFinished(chessboard->board.at(primarySquare)->piece)) {
+                    for(int i=0;i<=10;i++){
+                        qDebug() <<"No mvoes poossible";
+                    }
+
+                    QMessageBox msgBox= QMessageBox();
+                    msgBox.setText("No move possible you've lost");
+                    msgBox.addButton("Main menu", QMessageBox::AcceptRole);
+\
+                    int result = msgBox.exec();
+
+                    switch (result) {
+                        case QMessageBox::AcceptRole:
+                            qDebug() << "Know that he lost";
+                            emit this->quitGame();
+                            break;
+                        default:
+
+                            qDebug() << "User closed the message box";
+                            emit this->quitGame();
+
+
+                            break;
+                    }
+
+                }else{
                 QMessageBox msgBox= QMessageBox();
                 msgBox.setText("Mate, are you playing or want to surrender?");
                 msgBox.addButton("Play", QMessageBox::AcceptRole);
@@ -339,6 +380,7 @@ Piece* GameMode::canPickPiece(int X,int Y)
 
                         break;
                 }
+                }
             }else return chessboard->board.at(primarySquare)->piece;
 
 
@@ -354,6 +396,10 @@ Piece* GameMode::canPickPiece(int X,int Y)
     {
         return nullptr;
     }
+
+}
+void GameMode::setMyTurn(bool newMyTurn)
+{
 
 }
 char GameMode::getRowFromPixels(int X)
@@ -376,9 +422,15 @@ bool GameMode::gameStarted()
 
 void Multiplayer::receivedMove(std::string move)
 {
+    if(activePlayer=&player2){
+    activePlayer=&player1;
     qDebug()<<"move to perform"<<QString::fromStdString(move);
     std::string from = move.substr(0, 2);
     std::string to= move.substr(2,4);
     executeMove(chessboard->board.at(from)->piece,chessboard->board.at(to)->getX(),chessboard->board.at(to)->getY());
+    }
+    else{
+        qDebug()<<"Received message from opponent but its not his turn";
+    }
 }
 

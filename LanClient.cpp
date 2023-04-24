@@ -34,4 +34,9 @@ void MyClient::receivedServerMsg()
     QByteArray data = socket->readAll();
     qDebug()<<"Received msg from oponent" << data << "\n";
     emit opponentMove(data.toStdString());
-        }
+}
+
+QTcpSocket *MyClient::getSocket() const
+{
+    return socket;
+}

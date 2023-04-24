@@ -401,14 +401,8 @@ void King::getPossibleMoves()
 
                 possiblePosition[0]=(char)((int)(column)-1*i);
                 possiblePosition[1]=(char)(row-1*j);
-//                for(auto it=Piece::allFigures.begin();it!=Piece::allFigures.end();it++)
-//                {
-//                   if(((*it)->getIsWhite()!=this->getIsWhite()) && ((*it)->movePossible(this->actualPosition)))
-//                   {
-//                       allPossibleMoves.push_front(possiblePosition);
-//                   }
-//                }
-                if( moveExist(possiblePosition)){
+
+                if( (moveExist(possiblePosition))&& (!isSquareOccupiedByAlly(possiblePosition))){
                 allPossibleMoves.push_front(possiblePosition);//TO DELL
                 }
 

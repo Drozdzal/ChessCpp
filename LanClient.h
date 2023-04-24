@@ -15,6 +15,8 @@ public:
     explicit MyClient(QObject *parent = 0);
     void connectToServer();
     void sendMessage(std::string message);
+    QTcpSocket *getSocket() const;
+
 signals:
     void opponentMove(std::string move);
 
