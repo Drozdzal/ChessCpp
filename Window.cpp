@@ -264,3 +264,13 @@ void Window::displaySettings()
 
 }
 
+void Window::addSurrenderButton()
+{
+    Button* surrenderButton = new Button(QString("Surrender"));
+    int xPos = 950 - surrenderButton->boundingRect().width()/2;
+    int yPos = 300;
+    surrenderButton->setPos(xPos,yPos);
+    connect(surrenderButton,&Button::clicked,this,&Window::surrenderButton);
+    scene->addItem(surrenderButton);
+}
+

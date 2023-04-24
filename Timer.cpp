@@ -21,7 +21,7 @@
         setPlainText("--:--");
 
           // set position to (800, 800)
-          setPos(750, 100);
+          setPos(900, 100);
 
           // create timer to update the time every second
           timer = new QTimer(this);

@@ -37,11 +37,30 @@ Game::Game(QWidget *parent){
     connect(window,&Window::nextMove,this,&Game::nextMove);
     connect(window,&Window::previousMove,this,&Game::previousMove);
     connect(window,&Window::showMainMenu,this,&Game::showMainMenu);
+    connect(window,&Window::surrenderButton,this,&Game::clickedSurrender);
     setScene(window->scene);
     window->displayMenu();
 }
 
+void Game::clickedSurrender()
+{
+    qDebug()<<"Opponent clicked surrender";
+    QMessageBox msgBox= QMessageBox();
+    msgBox.setText("You've surrender");
+    msgBox.addButton("Main menu", QMessageBox::AcceptRole);
+\
+    int result = msgBox.exec();
 
+    switch (result) {
+        case QMessageBox::AcceptRole:
+            qDebug() << "Know that he lost";
+            window->showMainMenu();
+            break;
+        default:
+         break;
+
+}
+}
 
 // SLOTS
 void Game::multiplayer()
@@ -61,6 +80,7 @@ void Game::createServer(){
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    window->addSurrenderButton();
     gameMode = new Multiplayer(playerServer,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
@@ -77,6 +97,7 @@ void Game::joinServer()
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    window->addSurrenderButton();
     gameMode = new Multiplayer(player1,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
@@ -96,6 +117,7 @@ void Game::singleplayer()
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
+    window->addSurrenderButton();
     gameMode = new Singleplayer(player1,player2);
 
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
@@ -106,7 +128,7 @@ void Game::singleplayer()
     gameMode->gameStarted();
     window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
     gameMode->getPlayer1().getTimerWidget()->getTimer()->stop();
-    gameMode->getPlayer1().getTimerWidget()->setPos(750,600);
+    gameMode->getPlayer1().getTimerWidget()->setPos(900,600);
     gameMode->getPlayer2().getTimerWidget()->getTimer()->stop();
     window->scene->addItem(gameMode->getPlayer2().getTimerWidget());
     qDebug()<<"po";
@@ -116,9 +138,6 @@ void Game::singleplayer()
 void Game::loading()
 {
     window->clearScene();
-//    connect(window,&Window::nextMove,this,&Game::nextMove);
-//    connect(window,&Window::previousMove,this,&Game::previousMove);
-
     QString choosenFile=window->loadingWindow();
     loader.readJson(choosenFile);
     chessboard->createBoard();
@@ -148,7 +167,6 @@ void Game::settings()
 {
     qDebug() << "Settings";
     window->displaySettings();
-//    client->sendMessage();
 }
 void Game::computer()
 {
@@ -192,6 +210,8 @@ void Game::mouseMoveEvent(QMouseEvent *event){
 
 void Game::mousePressEvent(QMouseEvent *event){
     qDebug()<<"Clicked";
+    if((event->x()<675)&&(event->x()>75)){
+        if((event->y()<675)&&(event->y()>75)){
     if ((pieceToMove==nullptr) && inPlayingMode){
         qDebug()<<"Proboje podniesc";
         pieceToMove=gameMode->canPickPiece(event->x(),event->y());
@@ -222,6 +242,8 @@ void Game::mousePressEvent(QMouseEvent *event){
         pieceToMove->setPos(previousSquare->getX(),previousSquare->getY());
         pieceToMove=nullptr;
         }
+    }
+}
     }
     QGraphicsView::mousePressEvent(event);
 }

@@ -93,10 +93,7 @@ bool GameMode::isFinished(Piece *piece)
                        qDebug()<<"Checking next move";
 
                         previousPose=(*it)->actualPosition;
-                        qDebug()<<"wodking";
                         (*it)->actualPosition=(*move);
-//TODO: is mate crashuje a dokladniej wbicie na nowy ruch
-                        // TUTAJ CRASH
                         if(!isMate(*it))
                         {
                             qDebug()<<"Can save from pose" << QString::fromStdString(previousPose);
@@ -106,9 +103,7 @@ bool GameMode::isFinished(Piece *piece)
                             break;
                         }
                         qDebug()<<"Ten ruch nie obroni";
-//                        qDebug()<<QString::fromStdString(*move);
                         qDebug()<<QString::fromStdString(previousPose);
-                        //TUTAJ CRASH
                         (*it)->actualPosition=previousPose;
 
                         qDebug()<<"Pozycja piona przywrocona";

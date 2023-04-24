@@ -13,6 +13,7 @@
 #include "GameMode.h"
 #include "LanClient.h"
 #include <QAbstractButton>
+#include <QMessageBox>
 
 class Game: public QGraphicsView{
     Q_OBJECT
@@ -52,6 +53,7 @@ public slots:
     void baseTimeChanged(QAbstractButton *button);
     void addingTimeChanged(QAbstractButton *button);
     void showMainMenu();
+    void clickedSurrender();
 
     void computer();
     void close();

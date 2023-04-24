@@ -31,6 +31,7 @@ public:
     void displayJoinServer();
     void displaySettings();
     QString loadingWindow();
+    void addSurrenderButton();
     QGraphicsScene *scene;
 
     QButtonGroup *getAddingTime() const;
@@ -54,6 +55,7 @@ signals:
     void close();
     void playersRating();
     void showMainMenu();
+    void surrenderButton();
 };
 
 class ChoosingPanel : public QGraphicsWidget
