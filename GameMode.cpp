@@ -429,3 +429,7 @@ void Multiplayer::receivedMove(std::string move)
     }
 }
 
+void GameMode::setGameStarted(bool isStarted)
+{
+    isGameStarted=isStarted;
+}

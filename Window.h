@@ -30,8 +30,9 @@ public:
     void displayCreateServer();
     void displayJoinServer();
     void displaySettings();
+    void backToMainMenu(int,int);
     QString loadingWindow();
-    void addSurrenderButton();
+    void addSurrenderButton(int,int);
     QGraphicsScene *scene;
 
     QButtonGroup *getAddingTime() const;

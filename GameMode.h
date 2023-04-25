@@ -21,6 +21,7 @@ protected:
    std::string currentChange="0000";
 public:
    bool gameStarted();
+   void setGameStarted(bool isStarted);
    void setChessboard(Board* chessboard);
    void chooseFirst();
    void start();

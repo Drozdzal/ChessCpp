@@ -80,7 +80,7 @@ void Game::createServer(){
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
-    window->addSurrenderButton();
+    window->addSurrenderButton(950,300);
     gameMode = new Multiplayer(playerServer,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
@@ -97,7 +97,7 @@ void Game::joinServer()
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
-    window->addSurrenderButton();
+    window->addSurrenderButton(950,300);
     gameMode = new Multiplayer(player1,player2);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
@@ -117,7 +117,7 @@ void Game::singleplayer()
     window->clearScene();
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
-    window->addSurrenderButton();
+    window->addSurrenderButton(950,300);
     gameMode = new Singleplayer(player1,player2);
 
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
@@ -191,6 +191,7 @@ void Game::close()
 void Game::quitGame()
 {
     qDebug()<<"Received quti signal";
+    inPlayingMode=false;
     this->close();
 }
 
@@ -265,5 +266,6 @@ void Game::addingTimeChanged(QAbstractButton *button){
 }
 
 void Game::showMainMenu(){
+    inPlayingMode=false;
     window->displayMenu();
 }

@@ -85,12 +85,7 @@ void Window::displayMenu()
     scene->addItem(loadButton);
 
     // create the quit button
-    Button* quitButton = new Button(QString("Quit"));
-    int qxPos = 600 - quitButton->boundingRect().width()/2;
-    int qyPos = 650;
-    quitButton->setPos(qxPos,qyPos);
-    connect(quitButton,&Button::clicked,this,&Window::close);
-    scene->addItem(quitButton);
+
 }
 void Window::displayChessboard(std::map<std::string,Square*> board){
     try{
@@ -211,6 +206,7 @@ void Window::displaySettings()
     QWidget* widget = new QWidget();
     QLabel* label = new QLabel("Starting Time:", widget);
     QVBoxLayout* mainLayout = new QVBoxLayout(widget);
+    widget->move(450,250);
     // Create a QButtonGroup and add some buttons to it
     startingTime = new QButtonGroup(widget);
     QPushButton* lowTime = new QPushButton("30 mins", widget);
@@ -261,16 +257,25 @@ void Window::displaySettings()
     scene->addItem(mainMenu);
     scene->addItem(proxyWidget);
 
+    this->backToMainMenu(600,650);
+
 
 }
-
-void Window::addSurrenderButton()
+void Window::addSurrenderButton(int x=950,int y=300)
 {
     Button* surrenderButton = new Button(QString("Surrender"));
-    int xPos = 950 - surrenderButton->boundingRect().width()/2;
-    int yPos = 300;
+    int xPos = x - surrenderButton->boundingRect().width()/2;
+    int yPos = y;
     surrenderButton->setPos(xPos,yPos);
     connect(surrenderButton,&Button::clicked,this,&Window::surrenderButton);
     scene->addItem(surrenderButton);
 }
 
+void Window::backToMainMenu(int X,int Y){
+    Button* quitButton = new Button(QString("Quit"));
+    int qxPos = 600 - quitButton->boundingRect().width()/2;
+    int qyPos = 650;
+    quitButton->setPos(qxPos,qyPos);
+    connect(quitButton,&Button::clicked,this,&Window::close);
+    scene->addItem(quitButton);
+}

@@ -98,17 +98,21 @@ createPieces(board,obiekcik);
 
 }
 void Loader::moveForward(Board* board){
-    actual_move+=1;
-    std::list<Piece*>().swap(Piece::allFigures);
     QJsonDocument d = QJsonDocument::fromJson(loadedGame.toUtf8());
     QJsonObject set = d.object();
+    int allMoves =set.count();
+    if (actual_move<(allMoves-1)){
+    std::list<Piece*>().swap(Piece::allFigures);
+    actual_move+=1;
+
     QJsonValue value = set.value(QString::number(actual_move));
     QJsonObject obiekcik = value.toObject();
     QStringList pola = obiekcik.keys();
     createPieces(board,obiekcik);
-
+}else qDebug()<<"Juz doszedles do ostatniego ruchu";
 }
 void Loader::moveBackward(Board* board){
+    if(actual_move>=1){
     actual_move-=1;
     std::list<Piece*>().swap(Piece::allFigures);
     QJsonDocument d = QJsonDocument::fromJson(loadedGame.toUtf8());
@@ -117,6 +121,7 @@ void Loader::moveBackward(Board* board){
     QJsonObject obiekcik = value.toObject();
     QStringList pola = obiekcik.keys();
     createPieces(board,obiekcik);
-}
+}else qDebug()<<"Juz doszedles do ostatniego ruchu";
+    }
 
 
