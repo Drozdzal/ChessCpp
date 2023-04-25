@@ -22,14 +22,6 @@ signals:
 
 public slots:
     void receivedServerMsg();
-//    void connected();
-//    void disconnected();
-//    void readyRead();
-
-//    // make the server fully ascynchronous
-//    // by doing time consuming task
-//    void TaskResult(int Number);
-
 private:
     QTcpSocket *socket;
 

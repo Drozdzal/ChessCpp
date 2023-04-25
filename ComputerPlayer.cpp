@@ -21,7 +21,6 @@ std::string SimpleComputer::getNextMove()
     std::string change="00I9";
     std::string choosenMove="I9";
     do{
-//    choosenPieceId = std::rand() % Piece::allFigures.size();
     num_of_pieces=Piece::allFigures.size();
     choosenPieceId = generator.bounded(0, num_of_pieces);
     choosenPiece=*(std::next(Piece::allFigures.begin(), choosenPieceId));
@@ -41,7 +40,6 @@ std::string SimpleComputer::getNextMove()
     qDebug()<<int(char("H"));
     qDebug()<<QString::number(int(choosenMove[0])<=72);
     qDebug()<<QString::number(int(choosenMove[0])>=65);
-//    qDebug()<<int(choosenMove[0])>=int("A");
 
 
     if((int(choosenMove[0])<=72) && (int(choosenMove[0])>=65))

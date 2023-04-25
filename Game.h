@@ -17,19 +17,7 @@
 
 class Game: public QGraphicsView{
     Q_OBJECT
-public:
-    // constructors
-    Game(QWidget* parent=NULL);
-
-    // public methods
-
-
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent* event);
-    bool isMovePossible(int X,int Y);
-    void actualizeView();
-    void backToPrimaryPosition();
-    // public attributes
+private:
     Window* window;
     MyServer* server;
     MyClient* client;
@@ -37,7 +25,15 @@ public:
     Board* chessboard;
     Saver saver;
     Loader loader;
-    GameMode* gameMode; // TUTAJ PAMIETAC O MOZLIWYM PROBLEMIE w innych niz singleplayer;
+    GameMode* gameMode;
+    bool whiteTurn=true;
+public:
+    Game(QWidget* parent=NULL);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent* event);
+    bool isMovePossible(int X,int Y);
+    void actualizeView();
+    void backToPrimaryPosition();
     bool inPlayingMode=false;
     int timeRemaining=600;
     int timeAdding=20;
@@ -54,14 +50,9 @@ public slots:
     void addingTimeChanged(QAbstractButton *button);
     void showMainMenu();
     void clickedSurrender();
-
     void computer();
     void close();
     void quitGame();
-private:
-    bool whiteTurn=true;
-
-
 };
 
 #endif // GAME_H

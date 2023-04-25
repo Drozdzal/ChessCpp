@@ -1,7 +1,5 @@
 #ifndef LANSERVER_H
 #define LANSERVER_H
-
-
 #include <QObject>
 #include <QDebug>
 #include <QTcpServer>

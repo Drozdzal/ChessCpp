@@ -11,7 +11,6 @@ class Piece: public QObject,public QGraphicsPixmapItem {
     Q_OBJECT
 public:
     Piece(QGraphicsItem * parent=0);
-
     bool getIsWhite();
     bool getFirstMove();
     virtual void getPossibleMoves();

@@ -13,25 +13,18 @@ QButtonGroup *Window::getAddingTime() const
 {
     return addingTime;
 }
-
 void Window::setStartingTime(QButtonGroup *newStartingTime)
 {
     startingTime = newStartingTime;
 }
-
 QButtonGroup *Window::getStartingTime() const
 {
     return startingTime;
 }
-
 Window::Window(QObject* parent): QObject(parent){
     scene=new QGraphicsScene();
     scene->setSceneRect(0,0,1200,900);
 }
-
-
-
-
 void Window::displayMenu()
 {
     scene->clear();
@@ -98,7 +91,6 @@ void Window::displayChessboard(std::map<std::string,Square*> board){
         qDebug() << "Caught exception: " << e.what();
     }
 }
-
 void Window::displayMultiplayer()
 {
     scene->clear();
@@ -119,18 +111,11 @@ void Window::displayMultiplayer()
     scene->addItem(joinButton);
 
     // create the quit button
-    Button* quitButton = new Button(QString("Quit"));
-    int cxPos = 600 - quitButton->boundingRect().width()/2;
-    int cyPos = 425;
-    quitButton->setPos(cxPos,cyPos);
-    connect(quitButton,&Button::clicked,this,&Window::close);
-    scene->addItem(quitButton);
+    this->backToMainMenu(600,425);
 }
-
 void Window::displayCreateServer(){
 
 }
-
 void Window::displayJoinServer(){
 
 }
@@ -140,7 +125,6 @@ void Window::displayPieces(std::list<Piece*> pieces)
         scene->addItem(*it);
     }
 }
-
 void Window::addPiece(Piece* piece)
 {
     scene->addItem(piece);
@@ -160,7 +144,6 @@ void Window::actualizeView(std::map<std::string,Square*> board,std::list<Piece*>
     }
 
 }
-
 QString Window::loadingWindow()
 {
     QString folderPath = ":/bazowy"; // replace with your desired folder path
@@ -169,14 +152,14 @@ QString Window::loadingWindow()
             connect(nextMoveButton, &Button::clicked, this, &Window::nextMove);
 
             scene->addItem(nextMoveButton);
-            nextMoveButton->setPos(scene->width() - nextMoveButton->boundingRect().width() - 100, 300); // Position on the right side
+            nextMoveButton->setPos(scene->width() - nextMoveButton->boundingRect().width() - 100, 200); // Position on the right side
 
     Button* previousMoveButton = new Button("Previous Move");
                     connect(previousMoveButton, &Button::clicked, this, &Window::previousMove);
 
                     scene->addItem(previousMoveButton);
-                    previousMoveButton->setPos(scene->width() - previousMoveButton->boundingRect().width() - 100, 500); // Position on the right side
-
+                    previousMoveButton->setPos(scene->width() - previousMoveButton->boundingRect().width() - 100, 400); // Position on the right side
+    this->backToMainMenu(scene->width() - previousMoveButton->boundingRect().width() ,600);
        // Open a file dialog to allow the player to choose a file
     QString filePath = QFileDialog::getOpenFileName(nullptr, tr("Choose a file"), folderPath);
     return filePath;
@@ -198,16 +181,15 @@ void Window::clearScene()
     scene->clear();
 
 }
-
 void Window::displaySettings()
 {
     scene->clear();
-
     QWidget* widget = new QWidget();
-    QLabel* label = new QLabel("Starting Time:", widget);
     QVBoxLayout* mainLayout = new QVBoxLayout(widget);
-    widget->move(450,250);
-    // Create a QButtonGroup and add some buttons to it
+    QLabel* startingLabel = new QLabel("Starting Time:", widget);
+    startingLabel->setAlignment(Qt::AlignCenter);
+
+    widget->move(460,250);
     startingTime = new QButtonGroup(widget);
     QPushButton* lowTime = new QPushButton("30 mins", widget);
     QPushButton* mediumTime = new QPushButton("10 mins", widget);
@@ -215,15 +197,19 @@ void Window::displaySettings()
     startingTime->addButton(lowTime);
     startingTime->addButton(mediumTime);
     startingTime->addButton(highTime);
-
     QHBoxLayout* layout = new QHBoxLayout(widget);
+    mainLayout->addWidget(startingLabel);
     layout->addWidget(lowTime);
     layout->addWidget(mediumTime);
     layout->addWidget(highTime);
     mainLayout->addLayout(layout);
-    // Create a QGraphicsProxyWidget to hold the widget and add it to the scene
-
     connect(startingTime, &QButtonGroup::buttonClicked, this, &Window::baseTimeChanged);
+
+    QLabel* addingLabel = new QLabel("Adding Time:", widget);
+    addingLabel->setAlignment(Qt::AlignCenter);
+
+    mainLayout->addWidget(addingLabel);
+
     addingTime = new QButtonGroup(widget);
     QPushButton* lowAdding = new QPushButton("30 sec", widget);
     QPushButton* mediumAdding = new QPushButton("20 sec", widget);
@@ -240,24 +226,14 @@ void Window::displaySettings()
 
 
 
-    // Create a QGraphicsProxyWidget to hold the widget and add it to the scene
-
-    mainLayout->addSpacing(100);
     mainLayout->addLayout(layout2);
     widget->setLayout(mainLayout);
     QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget();
     proxyWidget->setWidget(widget);
 
 
-    Button* mainMenu = new Button(QString("Back to Main Menu"));
-    int xPos = 600 - mainMenu->boundingRect().width()/2;
-    int yPos = 275;
-    mainMenu->setPos(xPos,yPos);
-    connect(mainMenu,&Button::clicked,this,&Window::showMainMenu);
-    scene->addItem(mainMenu);
     scene->addItem(proxyWidget);
-
-    this->backToMainMenu(600,650);
+    this->backToMainMenu(600,400);
 
 
 }
@@ -270,12 +246,11 @@ void Window::addSurrenderButton(int x=950,int y=300)
     connect(surrenderButton,&Button::clicked,this,&Window::surrenderButton);
     scene->addItem(surrenderButton);
 }
-
 void Window::backToMainMenu(int X,int Y){
-    Button* quitButton = new Button(QString("Quit"));
-    int qxPos = 600 - quitButton->boundingRect().width()/2;
-    int qyPos = 650;
-    quitButton->setPos(qxPos,qyPos);
-    connect(quitButton,&Button::clicked,this,&Window::close);
-    scene->addItem(quitButton);
+    Button* mainMenu = new Button(QString("Back to Main Menu"));
+    int xPos = X - mainMenu->boundingRect().width()/2;
+    int yPos = Y;
+    mainMenu->setPos(xPos,yPos);
+    connect(mainMenu,&Button::clicked,this,&Window::showMainMenu);
+    scene->addItem(mainMenu);
 }

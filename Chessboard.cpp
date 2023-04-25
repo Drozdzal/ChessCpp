@@ -16,41 +16,12 @@ std::map<std::string, Square *> Board::getBoard()
     return board;
 }
 
-void Board::setBoard(const std::map<std::string, Square *> &newBoard)
-{
-    board = newBoard;
-}
+void Board::resetBoard(){
+    std::list<Piece*>().swap(Piece::allFigures);
+    board.clear();
 
-int Board::getBoardRowOffset() const
-{
-    return boardRowOffset;
-}
 
-void Board::setBoardRowOffset(int newBoardRowOffset)
-{
-    boardRowOffset = newBoardRowOffset;
 }
-
-int Board::getBoardColumnOffset() const
-{
-    return boardColumnOffset;
-}
-
-void Board::setBoardColumnOffset(int newBoardColumnOffset)
-{
-    boardColumnOffset = newBoardColumnOffset;
-}
-
-int Board::getSizeOfSquare() const
-{
-    return sizeOfSquare;
-}
-
-void Board::setSizeOfSquare(int newSizeOfSquare)
-{
-    sizeOfSquare = newSizeOfSquare;
-}
-
 void Board::createBoard()
 {
     bool color=false;

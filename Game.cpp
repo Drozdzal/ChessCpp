@@ -67,6 +67,7 @@ void Game::multiplayer()
 {
     window->displayMultiplayer();
 
+
 }
 
 void Game::createServer(){
@@ -87,11 +88,17 @@ void Game::createServer(){
     inPlayingMode=true;
     gameMode->gameStarted();
     gameMode->setMyTurn(true);
+    window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
+    gameMode->getPlayer1().getTimerWidget()->getTimer()->stop();
+    gameMode->getPlayer1().getTimerWidget()->setPos(900,600);
+    gameMode->getPlayer2().getTimerWidget()->getTimer()->stop();
+    window->scene->addItem(gameMode->getPlayer2().getTimerWidget());
 }
 void Game::joinServer()
 {
-    Player player1=Player("Michal",false);
-    Player player2=Player("Ewa",true);
+    Player player1=Player("Ewa",false);
+    Player player2=Player("Michal",true);
+
     chessboard->createBoard();
     chessboard->createPieces();
     window->clearScene();
@@ -103,6 +110,13 @@ void Game::joinServer()
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;
     gameMode->gameStarted();
+    gameMode->opponentMove();
+
+    window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
+    gameMode->getPlayer1().getTimerWidget()->getTimer()->stop();
+    gameMode->getPlayer2().getTimerWidget()->setPos(900,600);
+    gameMode->getPlayer2().getTimerWidget()->getTimer()->stop();
+    window->scene->addItem(gameMode->getPlayer2().getTimerWidget());
 
 }
 void Game::singleplayer()
@@ -111,7 +125,6 @@ void Game::singleplayer()
     Player player2=Player("Ewa",false);
     player1.getTimerWidget()->setTimeRules(timeRemaining,timeAdding);
     player2.getTimerWidget()->setTimeRules(timeRemaining,timeAdding);
-
     chessboard->createBoard();
     chessboard->createPieces();
     window->clearScene();
@@ -119,11 +132,7 @@ void Game::singleplayer()
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     window->addSurrenderButton(950,300);
     gameMode = new Singleplayer(player1,player2);
-
-    connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
-    qDebug()<<"przed";
-
     inPlayingMode=true;
     gameMode->gameStarted();
     window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
@@ -131,9 +140,6 @@ void Game::singleplayer()
     gameMode->getPlayer1().getTimerWidget()->setPos(900,600);
     gameMode->getPlayer2().getTimerWidget()->getTimer()->stop();
     window->scene->addItem(gameMode->getPlayer2().getTimerWidget());
-    qDebug()<<"po";
-
-
 }
 void Game::loading()
 {
@@ -144,6 +150,7 @@ void Game::loading()
     loader.firstMoveFromJson(this->chessboard);
     window->displayChessboard(chessboard->board);
     window->displayPieces(Piece::allFigures);
+
 }
 void Game::nextMove()
 {
@@ -177,6 +184,9 @@ void Game::computer()
     window->displayChessboard(chessboard->board);
     window->displayPieces(chessboard->board.at("A1")->piece->allFigures);
     gameMode=new Computer(player1);
+    window->addSurrenderButton(950,300);
+    window->scene->addItem(gameMode->getPlayer1().getTimerWidget());
+    gameMode->getPlayer1().getTimerWidget()->setPos(900,600);
     connect(gameMode,&GameMode::quitGame,this,&Game::quitGame);
     gameMode->setChessboard(chessboard);
     inPlayingMode=true;
@@ -187,15 +197,12 @@ void Game::close()
 
     qDebug() << "Quit";
 }
-
 void Game::quitGame()
 {
     qDebug()<<"Received quti signal";
     inPlayingMode=false;
     this->close();
 }
-
-
 void Game::backToPrimaryPosition()
 {
     pieceToMove=nullptr;
@@ -206,9 +213,14 @@ void Game::mouseMoveEvent(QMouseEvent *event){
     {
         pieceToMove->setPos(event->pos());
     }
+
+    if (inPlayingMode &&(gameMode->isPieceToDelete()!=nullptr))
+    {
+        window->deletePiece(gameMode->isPieceToDelete());
+        gameMode->pieceDeleted();
+    }
     QGraphicsView::mouseMoveEvent(event);
 }
-
 void Game::mousePressEvent(QMouseEvent *event){
     qDebug()<<"Clicked";
     if((event->x()<675)&&(event->x()>75)){
@@ -216,9 +228,6 @@ void Game::mousePressEvent(QMouseEvent *event){
     if ((pieceToMove==nullptr) && inPlayingMode){
         qDebug()<<"Proboje podniesc";
         pieceToMove=gameMode->canPickPiece(event->x(),event->y());
-
-
-
     }
     else if ((pieceToMove!=nullptr)&& inPlayingMode)
     {
@@ -248,7 +257,6 @@ void Game::mousePressEvent(QMouseEvent *event){
     }
     QGraphicsView::mousePressEvent(event);
 }
-
 void Game::baseTimeChanged(QAbstractButton *button){
     std::string buttonText=button->text().toStdString();
     int timeChanged = stoi(buttonText.substr(0,2));
@@ -256,7 +264,6 @@ void Game::baseTimeChanged(QAbstractButton *button){
     qDebug()<<timeChanged;
     this->timeRemaining=timeChanged;
 }
-
 void Game::addingTimeChanged(QAbstractButton *button){
     std::string buttonText=button->text().toStdString();
     int timeChanged = stoi(buttonText.substr(0,2));
@@ -268,4 +275,6 @@ void Game::addingTimeChanged(QAbstractButton *button){
 void Game::showMainMenu(){
     inPlayingMode=false;
     window->displayMenu();
+    chessboard->resetBoard();
+
 }

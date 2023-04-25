@@ -9,8 +9,33 @@
 class GameMode: public QObject{
     Q_OBJECT
 public:
-GameMode(Player player1,Player player2);
-GameMode();
+    GameMode(Player player1,Player player2);
+    GameMode();
+    bool gameStarted();
+    void setGameStarted(bool isStarted);
+    void setChessboard(Board* chessboard);
+    void chooseFirst();
+    void start();
+    void end();
+    virtual void swichTurn()=0;
+    virtual void opponentMove()=0;
+    bool isMate(Piece* piece);
+    bool isFinished(Piece* piece);
+    void pieceDeleted();
+    Piece* isPieceToDelete();
+    void setMyTurn(bool newMyTurn);
+    bool executeMove(Piece* piece, int X,int Y);
+    bool piecesOnPath(Square *choosenSquare);
+    void setPickedPiece();
+    void changeTurn();
+    bool movePiece(Piece* piece,int X,int Y);
+    bool attackPiece(Piece* piece,int X,int Y);
+    Piece* canPickPiece(int X,int Y);
+    char getColumnFromPixels(int X);
+    char getRowFromPixels(int Y);
+    int getSquareOnRowColumn(int row,int column);
+    Player getPlayer1() const;
+    Player getPlayer2() const;
 protected:
    Player player1;
    Player player2;
@@ -19,45 +44,9 @@ protected:
    bool isGameStarted;
    Piece* pieceToRemove=nullptr;
    std::string currentChange="0000";
-public:
-   bool gameStarted();
-   void setGameStarted(bool isStarted);
-   void setChessboard(Board* chessboard);
-   void chooseFirst();
-   void start();
-   void end();
-   virtual void swichTurn()=0;
-   virtual void opponentMove()=0;
-   bool isMate(Piece* piece);
-   bool isFinished(Piece* piece);
-   void pieceDeleted();
-   Piece* isPieceToDelete();
-   void setMyTurn(bool newMyTurn);
-
-
-
-   bool executeMove(Piece* piece, int X,int Y);
-   bool piecesOnPath(Square *choosenSquare);
-   void setPickedPiece();
-   void changeTurn();
-   bool movePiece(Piece* piece,int X,int Y);
-   bool attackPiece(Piece* piece,int X,int Y);
-
-   Piece* canPickPiece(int X,int Y);
-   char getColumnFromPixels(int X);
-   char getRowFromPixels(int Y);
-   int getSquareOnRowColumn(int row,int column);
-   Player getPlayer1() const;
-
-   Player getPlayer2() const;
-
-private:
    bool myTurn;
-
 signals:
    void quitGame();
-
-
 };
 
 class Singleplayer : public GameMode{

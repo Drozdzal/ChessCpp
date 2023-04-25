@@ -144,10 +144,23 @@ void Singleplayer::opponentMove(){
 }
 void Multiplayer::swichTurn(){
     client->sendMessage(this->currentChange);
+    activePlayer->getTimerWidget()->addTime();
+    activePlayer->getTimerWidget()->getTimer()->stop();
     qDebug()<<"Multiplayer switch turn";
     activePlayer=&player2;
+    activePlayer->getTimerWidget()->getTimer()->start();
 }
 void Multiplayer::opponentMove(){
+    if (activePlayer==&player1)
+    {
+        qDebug()<<"pl1changing to 2";
+        activePlayer=&player2;
+    }
+    else if(activePlayer==&player2)
+    {
+        activePlayer=&player1;
+        qDebug()<<"pl2changing to 1";
+    }
 }
 void Multiplayer::setMyTurn(bool newMyTurn)
 {
@@ -158,6 +171,7 @@ Multiplayer::Multiplayer(Player player1,Player player2)
 {
     qDebug()<<"construktor invoked";
     this->player1=player1;
+    this->player2=player2;
     activePlayer=&(this->player1);
     qDebug()<<"constructor active player"<<activePlayer->getIsWhite();
     client = new MyClient();
@@ -169,11 +183,14 @@ Multiplayer::Multiplayer(Player player1,Player player2)
 Computer::Computer(Player player1)
 {
     this->player1.setIsWhite(player1.getIsWhite());
+    this->player1=player1;
     activePlayer=&(this->player1);
+    this->player2=Player("Computer",!player1.getIsWhite());
     computer= new SimpleComputer();
-    computer->setIsWhite(false);
+    computer->setIsWhite(!player1.getIsWhite());
 }
 void Computer::swichTurn(){
+    activePlayer->getTimerWidget()->addTime();
     std::string currentChange="0000";
     currentChange=computer->getNextMove();
     std::string primarySquare="00";
@@ -184,15 +201,16 @@ void Computer::swichTurn(){
     std::cout<<"Primary square"<< primarySquare;
     secondarySquare[0]=currentChange[2];
     secondarySquare[1]=currentChange[3];
-    std::cout<<"Secondary square"<< secondarySquare;
-    piece->setX(chessboard->board.at(secondarySquare)->getX());
-    piece->setY(chessboard->board.at(secondarySquare)->getY());
-    piece->actualPosition=secondarySquare;
-    chessboard->board.at(primarySquare)->piece=nullptr;
-    chessboard->board.at(primarySquare)->setOccupied(false);
-    chessboard->board.at(secondarySquare)->piece = piece;
-    chessboard->board.at(secondarySquare)->setOccupied(true);
-    std::cout << "moved" << "\n";
+    executeMove(piece,chessboard->board.at(secondarySquare)->getX(),chessboard->board.at(secondarySquare)->getY());
+//    std::cout<<"Secondary square"<< secondarySquare;
+//    piece->setX(chessboard->board.at(secondarySquare)->getX());
+//    piece->setY(chessboard->board.at(secondarySquare)->getY());
+//    piece->actualPosition=secondarySquare;
+//    chessboard->board.at(primarySquare)->piece=nullptr;
+//    chessboard->board.at(primarySquare)->setOccupied(false);
+//    chessboard->board.at(secondarySquare)->piece = piece;
+//    chessboard->board.at(secondarySquare)->setOccupied(true);
+//    std::cout << "moved" << "\n";
 
 }
 void Computer::opponentMove(){
@@ -277,8 +295,12 @@ bool GameMode::attackPiece(Piece* piece, int X,int Y)
      {
             std::string primarySquare = piece->actualPosition;
             std::string secondarySquare ="00";
+            currentChange[0]=primarySquare[0];
+            currentChange[1]=primarySquare[1];
             secondarySquare[0]=getColumnFromPixels(X);
             secondarySquare[1]=getRowFromPixels(Y);
+            currentChange[2]=getColumnFromPixels(X);
+            currentChange[3]=getRowFromPixels(Y);
             piece->actualPosition=secondarySquare;
             chessboard->board.at(secondarySquare)->piece->actualPosition = "00";
             if(!isMate(piece)){
@@ -418,11 +440,14 @@ bool GameMode::gameStarted()
 void Multiplayer::receivedMove(std::string move)
 {
     if(activePlayer=&player2){
-    activePlayer=&player1;
     qDebug()<<"move to perform"<<QString::fromStdString(move);
     std::string from = move.substr(0, 2);
     std::string to= move.substr(2,4);
     executeMove(chessboard->board.at(from)->piece,chessboard->board.at(to)->getX(),chessboard->board.at(to)->getY());
+    activePlayer->getTimerWidget()->addTime();
+    activePlayer->getTimerWidget()->getTimer()->stop();
+    activePlayer=&player1;
+    activePlayer->getTimerWidget()->getTimer()->start();
     }
     else{
         qDebug()<<"Received message from opponent but its not his turn";

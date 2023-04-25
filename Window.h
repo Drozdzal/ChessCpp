@@ -59,15 +59,4 @@ signals:
     void surrenderButton();
 };
 
-class ChoosingPanel : public QGraphicsWidget
-{
-public:
-    ChoosingPanel(QGraphicsItem* parent = nullptr);
-
-    int getSelectedDuration() const;
-
-private:
-    QButtonGroup* durationGroup;
-
-};
 #endif // WINDOW_H
